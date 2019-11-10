@@ -41,7 +41,7 @@ public class UserInput : MonoBehaviour
             m_Client.TakeOffBall();
         }
 
-        if(Input.GetKey(KeyCode.LeftShift))
+        if(Input.GetKeyDown(KeyCode.LeftShift))
         {
             m_Client.Reverse();
         }

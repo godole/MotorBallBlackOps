@@ -18,9 +18,12 @@ public class CustomFreeLookCam : UnityStandardAssets.Cameras.PivotBasedCameraRig
     [SerializeField] private float m_TiltMin = 45f;                       // The minimum value of the x axis rotation of the pivot.
     [SerializeField] private bool m_LockCursor = false;                   // Whether the cursor should be hidden and locked.
     [SerializeField] private bool m_VerticalAutoReturn = false;           // set wether or not the vertical axis should auto return
+    [SerializeField] private float m_TiltMaxY = 75f;                       // The maximum value of the x axis rotation of the pivot.
+    [SerializeField] private float m_TiltMinY = 45f;
 
     private float m_LookAngle;                    // The rig's y axis rotation.
     private float m_TiltAngle;                    // The pivot's x axis rotation.
+    private float m_TiltAngleY;                    // The pivot's x axis rotation.
     private const float k_LookDistance = 100;    // How far in front of the pivot the character's look target is.
     private Vector3 m_PivotEulers;
     private Quaternion m_PivotTargetRot;
@@ -73,15 +76,32 @@ public class CustomFreeLookCam : UnityStandardAssets.Cameras.PivotBasedCameraRig
         if (Time.timeScale < float.Epsilon)
             return;
 
+        m_LookAngle = 0.0f;
+
         // Read the user input
         var x = CrossPlatformInputManager.GetAxis("Mouse X");
         var y = CrossPlatformInputManager.GetAxis("Mouse Y");
 
         // Adjust the look angle by an amount proportional to the turn speed and horizontal input.
+        float targetRotEulerY = m_Target.rotation.eulerAngles.y;
         m_LookAngle += x * m_TurnSpeed;
 
-        // Rotate the rig (the root object) around Y axis only:
+        //m_LookAngle = Mathf.Clamp(m_LookAngle, targetRotEulerY - m_TiltMinY, targetRotEulerY + m_TiltMaxY);
+        float deltaangle = Quaternion.FromToRotation(m_Target.forward, transform.forward).eulerAngles.y;
+        if (deltaangle > 180.0f)
+            deltaangle = 180.0f - (360.0f - deltaangle);
+        Debug.Log(deltaangle);
+
+        /*if (deltaangle < m_TiltMinY)
+            deltaangle = m_TiltMinY;
+
+        else if (deltaangle > m_TiltMaxY)
+            deltaangle = m_TiltMaxY;*/
+
+        //m_LookAngle += deltaangle;
+
         m_TransformTargetRot = Quaternion.Euler(0f, m_LookAngle, 0f);
+
 
         if (m_VerticalAutoReturn)
         {
@@ -94,7 +114,7 @@ public class CustomFreeLookCam : UnityStandardAssets.Cameras.PivotBasedCameraRig
         {
             // on platforms with a mouse, we adjust the current angle based on Y mouse input and turn speed
             m_TiltAngle -= y * m_TurnSpeed;
-            // and make sure the new value is within the tilt range
+            //// and make sure the new value is within the tilt range
             m_TiltAngle = Mathf.Clamp(m_TiltAngle, -m_TiltMin, m_TiltMax);
         }
 

@@ -11268,6 +11268,36 @@ PrefabInstance:
       propertyPath: m_Target
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 6708952188128700866, guid: 674931602bfb9b544b28d3a222fc58b8,
+        type: 3}
+      propertyPath: m_VerticalAutoReturn
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6708952188128700866, guid: 674931602bfb9b544b28d3a222fc58b8,
+        type: 3}
+      propertyPath: m_TiltMax
+      value: 75
+      objectReference: {fileID: 0}
+    - target: {fileID: 6708952188128700866, guid: 674931602bfb9b544b28d3a222fc58b8,
+        type: 3}
+      propertyPath: m_TiltMin
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 6708952188128700866, guid: 674931602bfb9b544b28d3a222fc58b8,
+        type: 3}
+      propertyPath: m_TurnSmoothing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6708952188128700866, guid: 674931602bfb9b544b28d3a222fc58b8,
+        type: 3}
+      propertyPath: m_TiltMaxY
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 6708952188128700866, guid: 674931602bfb9b544b28d3a222fc58b8,
+        type: 3}
+      propertyPath: m_TiltMinY
+      value: -60
+      objectReference: {fileID: 0}
     - target: {fileID: 1092642368, guid: 674931602bfb9b544b28d3a222fc58b8, type: 3}
       propertyPath: m_LocalPosition.y
       value: 2.2
