@@ -25,14 +25,6 @@ public class CatchBall : MonoBehaviour
         if (!ball.IsCatchEnable)
             return;
 
-        Hashtable props = new Hashtable
-        {
-            {GameSceneManager.BALL_OWNER_CHANGE, m_Character.PlayerID}
-        };
-        Hashtable oldProps = new Hashtable
-        {
-            {GameSceneManager.BALL_OWNER_CHANGE, PhotonNetwork.CurrentRoom.CustomProperties[GameSceneManager.BALL_OWNER_CHANGE] }
-        };
-        PhotonNetwork.CurrentRoom.SetCustomProperties(props, oldProps);
+        NetworkTool.SetCustomPropertiesSafe(GameSceneManager.BALL_OWNER_CHANGE, m_Character.PlayerID);
     }
 }

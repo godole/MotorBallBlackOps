@@ -22,22 +22,28 @@ public class UserInput : MonoBehaviour
 
         if (Input.GetButtonDown("Fire1"))
         {
-            m_Client.LeftAttack();
+            m_Client.AttackCheck(0);
         }
 
         if(Input.GetButtonDown("Fire2"))
         {
-            m_Client.RightAttack();
+            m_Client.AttackCheck(1);
         }
 
         if (Input.GetButtonDown("Fire3"))
         {
-            m_Client.ThrowBall();
+            m_Client.RPC("ThrowBall", Photon.Pun.RpcTarget.AllViaServer, 
+                m_Client.m_Cam.transform.forward);
         }
 
         if(Input.GetKey(KeyCode.F))
         {
             m_Client.TakeOffBall();
+        }
+
+        if(Input.GetKey(KeyCode.LeftShift))
+        {
+            m_Client.Reverse();
         }
 
         if (Input.GetKey(KeyCode.F2))
