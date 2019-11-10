@@ -159,14 +159,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Animator: {fileID: 1457}
-  m_MovementPower: 40
-  m_BoostMaxSpeed: 35
-  m_NormalMaxSpeed: 20
-  m_RotationSpeed: 120
-  m_RotationPower: 20
-  m_BallDecreaseRatio: 0.6
-  m_HitDecreaseSpeed: 7
-  m_ReverseSpeed: 15
+  m_EquipItems: []
+  m_MaxSpeedCoef: 0
+  m_OverdriveLimitCoef: 0
+  m_AcceleratingForceCoef: 0
+  m_OverdriveCoef: 0
+  m_SpeedCoef: 0
+  m_AccelerationCoef: 0
+  m_WeightCoef: 0
+  m_HandlingCoef: 0
+  m_BrakingFroceCoef: 0
 --- !u!136 &1475
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -786,10 +788,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49a76a6bd75cddf44b4639361379b08a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_AttackDamage: 0
-  m_AttackDelay: 0
-  m_AttackRange: 0
-  m_AttackPower: 0
+  m_AttackDamage: 5
+  m_AttackDelay: 1
+  m_AttackRange: 4
+  m_AttackPower: 2
 --- !u!1 &8796516633097070742
 GameObject:
   m_ObjectHideFlags: 0
@@ -833,10 +835,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d44b5fb3967f9954ab287c42f87be498, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Bullet: {fileID: 0}
-  m_MaxBulletCapacity: 0
+  m_Bullet: {fileID: 9169712586877461207, guid: 88b7a051624972c46876cebeb8aa24b6,
+    type: 3}
+  m_MaxBulletCapacity: 30
   m_CurBulletCapacity: 0
-  m_ShotDelay: 0
+  m_ShotDelay: 1
 --- !u!1001 &7734617420775816091
 PrefabInstance:
   m_ObjectHideFlags: 0

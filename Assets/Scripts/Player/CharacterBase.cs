@@ -34,6 +34,7 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     public int PlayerID { get => m_PlayerID; set => m_PlayerID = value; }
     public bool IsHitBullet { get => m_IsHitBullet; set => m_IsHitBullet = value; }
     public int CurrentHP { get => m_CurrentHP; set => m_CurrentHP = value; }
+    public bool IsFront { get => m_IsFront; set => m_IsFront = value; }
 
     public int m_MaxHP;
     int m_CurrentHP;
@@ -93,6 +94,11 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
 
             Destroy(m_RigidBody);
         }
+
+        foreach (var weapon in m_Weapons)
+        {
+            weapon.Character = this;
+        }
     }
 
     // Update is called once per frame
@@ -132,9 +138,9 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
 
     public void Reverse()
     {
-        m_IsFront = !m_IsFront;
+        IsFront = !IsFront;
         m_CharacterMesh.transform.Rotate(new Vector3(0.0f, 180.0f, 0.0f));
-        m_Cam.GetComponent<CustomFreeLookCam>().IsFront = m_IsFront;
+        m_Cam.GetComponent<CustomFreeLookCam>().IsFront = IsFront;
     }
 
     public void EnterPitstop(Vector3 endPoint, Quaternion rotation)
