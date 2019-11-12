@@ -37,6 +37,11 @@ public class MachineBase : MonoBehaviour
         {
             m_IsFront = !m_IsFront;
         }
+
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            m_IsFront = !m_IsFront;
+        }
     }
 
     // Update is called once per frame
@@ -80,9 +85,7 @@ public class MachineBase : MonoBehaviour
             else
                 SetFinalPower(m_BoostMaxSpeed, 0.0f);
         }
-
-        SetFinalPower(m_BoostMaxSpeed, v);
-        m_Rigidbody.AddForce(transform.right.normalized * m_RotationPower * _h);
+        
 
         if (m_CharacterBase.HasBall)
             finalSpeed = finalSpeed * m_BallDecreaseRatio;

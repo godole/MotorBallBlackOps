@@ -22,12 +22,12 @@ public class UserInput : MonoBehaviour
 
         if (Input.GetButtonDown("Fire1"))
         {
-            m_Client.AttackCheck(0);
+            m_Client.RPC("AttackCheck", Photon.Pun.RpcTarget.AllViaServer, 0);
         }
 
         if(Input.GetButtonDown("Fire2"))
         {
-            m_Client.AttackCheck(1);
+            m_Client.RPC("AttackCheck", Photon.Pun.RpcTarget.AllViaServer, 1);
         }
 
         if (Input.GetButtonDown("Fire3"))
@@ -42,6 +42,11 @@ public class UserInput : MonoBehaviour
         }
 
         if(Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            m_Client.Reverse();
+        }
+
+        if (Input.GetKeyUp(KeyCode.LeftShift))
         {
             m_Client.Reverse();
         }

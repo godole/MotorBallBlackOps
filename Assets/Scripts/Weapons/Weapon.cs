@@ -16,11 +16,19 @@ public class Weapon : MonoBehaviour
     {
         return IsAttackEnable;
     }
-    public virtual void Attack()
+    public virtual void Attack(Vector3 dir)
+    {
+
+    }
+    public virtual void Reload()
     {
 
     }
     public virtual void StartDelay()
+    {
+
+    }
+    public virtual void SetWeaponUI()
     {
 
     }

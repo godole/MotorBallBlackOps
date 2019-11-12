@@ -29,6 +29,8 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
 
     public GameObject m_DestroyEff;
 
+    public GameObject m_HitEff;
+
     public GameObject m_Ball;
     public bool HasBall { get => m_HasBall; set => m_HasBall = value; }
     public int PlayerID { get => m_PlayerID; set => m_PlayerID = value; }
@@ -62,17 +64,6 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
         if (photonView.IsMine)
         {
             m_PlayerID = m_GameManager.m_LocalID;
-
-            if(m_PlayerID % 2 == 1)
-            {
-                m_TeamNumber = GameSceneManager.RED_TEAM;
-                m_RedTeamSign.SetActive(true);
-            }
-            else
-            {
-                m_TeamNumber = GameSceneManager.BLUE_TEAM;
-                m_BlueTeamSign.SetActive(true);
-            }
         }
         else
         {
@@ -108,16 +99,33 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
         
         m_GameManager.m_HPUI[m_PlayerID - 1].value = CurrentHP / (float)m_MaxHP;
 
-        
+        if (transform.position.y < -50.0f)
+            m_CurrentHP = 0;
 
-        if(m_CurrentHP <= 0)
+        if (m_CurrentHP <= 0)
         {
-            Instantiate(m_DestroyEff, transform.position, Quaternion.identity);
-
             if (HasBall)
                 PhotonNetwork.Instantiate("Ball", transform.position, new Quaternion(), 0);
 
+            Instantiate(m_DestroyEff, transform.position, Quaternion.identity);
+
             PhotonNetwork.Destroy(gameObject);
+        }
+
+        if (m_PlayerID % 2 == 1)
+        {
+            m_TeamNumber = GameSceneManager.RED_TEAM;
+            m_RedTeamSign.SetActive(true);
+        }
+        else
+        {
+            m_TeamNumber = GameSceneManager.BLUE_TEAM;
+            m_BlueTeamSign.SetActive(true);
+        }
+
+        foreach (var weapon in m_Weapons)
+        {
+            weapon.SetWeaponUI();
         }
     }
 
@@ -140,6 +148,8 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     {
         IsFront = !IsFront;
         m_CharacterMesh.transform.Rotate(new Vector3(0.0f, 180.0f, 0.0f));
+
+        m_Cam.transform.Rotate(0.0f, 180.0f, 0.0f);
         m_Cam.GetComponent<CustomFreeLookCam>().IsFront = IsFront;
     }
 
@@ -151,23 +161,21 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
         m_CurrentHP = m_MaxHP;
         transform.position = endPoint;
         transform.rotation = rotation;
+
+        foreach (var weapon in m_Weapons)
+            weapon.Reload();
+
         gameObject.GetComponent<MachineBase>().ResetVelocity();
-        m_RigidBody.velocity = Vector3.zero;
     }
 
+    [PunRPC]
     public void AttackCheck(int index)
     {
         if(m_Weapons[index].AttackCheck())
         {
-            RPC("Attack", RpcTarget.AllViaServer, index);
-            m_Weapons[index].StartDelay();
+            m_Weapons[index].Attack(m_Cam.transform.forward);
+            m_Weapons[index].StartDelay();    
         }
-    }
-
-    [PunRPC]
-    void Attack(int index)
-    {
-        m_Weapons[index].Attack();
     }
 
     public void TakeOffBall()
@@ -192,6 +200,7 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     void Hit(Vector3 force, int dmg)
     {
         m_Animator.Play("Hit", m_Animator.GetLayerIndex("Hit"));
+        Instantiate(m_HitEff, transform.position, Quaternion.identity);
         m_CurrentHP -= dmg;
         if (photonView.IsMine)
             m_RigidBody.AddForce(force, ForceMode.Impulse);
@@ -208,7 +217,7 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
         NetworkTool.SetCustomPropertiesSafe(GameSceneManager.BALL_OWNER_CHANGE, -2);
 
         var ball = PhotonNetwork.Instantiate("Ball", 
-            transform.position + dir * 5.0f, new Quaternion());
+            transform.position, new Quaternion());
         ball.GetComponent<MotorBall>().Shot(transform.position, dir, m_ThrowPower);
     }
 
