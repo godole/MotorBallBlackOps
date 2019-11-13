@@ -22,7 +22,7 @@ public class CatchBall : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         var ball = other.gameObject.GetComponent<MotorBall>();
-        if (!ball.IsCatchEnable)
+        if (!ball.IsCatchEnable || !m_Character.photonView.IsMine)
             return;
 
         NetworkTool.SetCustomPropertiesSafe(GameSceneManager.BALL_OWNER_CHANGE, m_Character.PlayerID);

@@ -22,12 +22,12 @@ public class UserInput : MonoBehaviour
 
         if (Input.GetButtonDown("Fire1"))
         {
-            m_Client.RPC("AttackCheck", Photon.Pun.RpcTarget.AllViaServer, 0);
+            m_Client.AttackCheck(0);
         }
 
         if(Input.GetButtonDown("Fire2"))
         {
-            m_Client.RPC("AttackCheck", Photon.Pun.RpcTarget.AllViaServer, 1);
+            m_Client.AttackCheck(1);
         }
 
         if (Input.GetButtonDown("Fire3"))

@@ -12,17 +12,19 @@ public class Gun : Weapon
 
     GameSceneManager m_GameManager;
 
+    public override bool AttackCheck()
+    {
+        return m_CurBulletCapacity > 0 && IsAttackEnable;
+    }
+
     public override void Attack(Vector3 dir)
     {
-        if (IsAttackEnable && m_CurBulletCapacity > 0)
-        {
-            m_CurBulletCapacity--;
-            IsAttackEnable = false;
+        m_CurBulletCapacity--;
+        IsAttackEnable = false;
 
-            CreateBullet(dir);
-            
-            Character.PlayAnimation("Shooting", "Shooting");
-        }
+        CreateBullet(dir);
+
+        Character.PlayAnimation("Shooting", "Shooting");
     }
 
     public override void StartDelay()

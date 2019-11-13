@@ -123,9 +123,12 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
             m_BlueTeamSign.SetActive(true);
         }
 
-        foreach (var weapon in m_Weapons)
+        if(photonView.IsMine)
         {
-            weapon.SetWeaponUI();
+            foreach (var weapon in m_Weapons)
+            {
+                weapon.SetWeaponUI();
+            }
         }
     }
 
@@ -167,15 +170,20 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
 
         gameObject.GetComponent<MachineBase>().ResetVelocity();
     }
-
-    [PunRPC]
+    
     public void AttackCheck(int index)
     {
         if(m_Weapons[index].AttackCheck())
         {
-            m_Weapons[index].Attack(m_Cam.transform.forward);
+            RPC("Attack", RpcTarget.AllViaServer, index, m_Cam.transform.forward);
             m_Weapons[index].StartDelay();    
         }
+    }
+
+    [PunRPC]
+    void Attack(int index, Vector3 dir)
+    {
+        m_Weapons[index].Attack(dir);
     }
 
     public void TakeOffBall()
