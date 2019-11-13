@@ -307,6 +307,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 725, guid: 2cca709b81719d144b673b1f600bf927, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3.42
+      objectReference: {fileID: 0}
+    - target: {fileID: 1553, guid: 2cca709b81719d144b673b1f600bf927, type: 3}
+      propertyPath: viewIdField
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 201, guid: 2cca709b81719d144b673b1f600bf927, type: 3}
       propertyPath: m_Name
       value: TestPlayer
@@ -356,14 +364,6 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1537, guid: 2cca709b81719d144b673b1f600bf927, type: 3}
-      propertyPath: viewIdField
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 725, guid: 2cca709b81719d144b673b1f600bf927, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 3.42
-      objectReference: {fileID: 0}
-    - target: {fileID: 1553, guid: 2cca709b81719d144b673b1f600bf927, type: 3}
       propertyPath: viewIdField
       value: 1
       objectReference: {fileID: 0}

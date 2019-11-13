@@ -16,9 +16,7 @@ public class Bullet : MonoBehaviour
 
     public Vector3 MoveVector { get => m_MoveVector; set => m_MoveVector = value; }
 
-    public ParticleSystem m_ExplosionEff;
-
-    public ParticleSystem m_ExplosionLightEff;
+    public GameObject m_ExplosionEff;
 
     // Start is called before the first frame update
     void Start()
@@ -38,8 +36,7 @@ public class Bullet : MonoBehaviour
 
         if (m_Team != character.m_TeamNumber)
         {
-            m_ExplosionEff.Play();
-            m_ExplosionLightEff.Play();
+            Instantiate(m_ExplosionEff, transform.position, Quaternion.identity);
             character.RPC("Hit", Photon.Pun.RpcTarget.AllViaServer, Vector3.zero, m_AttackDamage);
             StopAllCoroutines();
             Destroy(gameObject);

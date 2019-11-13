@@ -76,7 +76,7 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
             PhotonNetwork.Instantiate("Ball", m_BallStartPosition.position, new Quaternion(), 0);
         }
 
-        CreatePosition = m_StartPosition[m_LocalID - 1];
+        SetCreatePosition(m_StartPosition[m_LocalID - 1]);
         CreatePlayer(m_StartPosition[m_LocalID - 1]);
     }
 

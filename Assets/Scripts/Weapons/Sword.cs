@@ -10,7 +10,7 @@ public class Sword : Weapon
     public float m_AttackRange;
     public float m_AttackPower;
 
-    public override void Attack()
+    public override void Attack(Vector3 dir)
     {
         if (IsAttackEnable)
         {

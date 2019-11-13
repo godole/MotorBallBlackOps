@@ -7,11 +7,19 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class Gate : MonoBehaviour
 {
+    bool m_IsActive = false;
+    [SerializeField]
+    int m_ID;
     public Transform m_RevivePosition;
+
+    public bool IsActive { get => m_IsActive; set => m_IsActive = value; }
+    public int ID { get => m_ID; set => m_ID = value; }
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        if (m_ID == 1)
+            IsActive = true;
     }
 
     // Update is called once per frame
@@ -22,12 +30,17 @@ public class Gate : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.tag == "Player")
+        if (!IsActive)
+            return;
+
+        if (other.gameObject.tag == "Player")
         {
             var character = other.gameObject.GetComponent<CharacterBase>();
 
             if (!character.photonView.IsMine)
                 return;
+
+            ActiveNextGate();
 
             if (character.HasBall)
             {
@@ -45,5 +58,21 @@ public class Gate : MonoBehaviour
             }
         }
         GameObject.Find("GameSceneManager").GetComponent<GameSceneManager>().SetCreatePosition(m_RevivePosition);
+    }
+
+    private void ActiveNextGate()
+    {
+        var gates = GameObject.FindGameObjectsWithTag("Gate");
+
+        foreach (var item in gates)
+        {
+            Gate g = item.GetComponent<Gate>();
+            if (ID + 1 == g.ID || (ID == 7 && g.ID == 1))
+            {
+                IsActive = false;
+                g.IsActive = true;
+                break;
+            }
+        }
     }
 }

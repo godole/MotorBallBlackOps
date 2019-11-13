@@ -12,22 +12,34 @@ public class Gun : Weapon
 
     GameSceneManager m_GameManager;
 
-    public override void Attack()
+    public override bool AttackCheck()
     {
-        if (IsAttackEnable && m_CurBulletCapacity > 0)
-        {
-            m_CurBulletCapacity--;
-            IsAttackEnable = false;
+        return m_CurBulletCapacity > 0 && IsAttackEnable;
+    }
 
-            CreateBullet(Character.m_Cam.transform.forward);
-            
-            Character.PlayAnimation("Shooting", "Shooting");
-        }
+    public override void Attack(Vector3 dir)
+    {
+        m_CurBulletCapacity--;
+        IsAttackEnable = false;
+
+        CreateBullet(dir);
+
+        Character.PlayAnimation("Shooting", "Shooting");
     }
 
     public override void StartDelay()
     {
         StartCoroutine(ShotDelay());
+    }
+
+    public override void Reload()
+    {
+        m_CurBulletCapacity = m_MaxBulletCapacity;
+    }
+
+    public override void SetWeaponUI()
+    {
+        UIUpdate();
     }
 
     IEnumerator ShotDelay()

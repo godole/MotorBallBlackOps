@@ -5,6 +5,7 @@ using UnityEngine;
 public class Pitstop : MonoBehaviour
 {
     public Transform m_EndPoint;
+
     // Start is called before the first frame update
     private void OnTriggerEnter(Collider other)
     {

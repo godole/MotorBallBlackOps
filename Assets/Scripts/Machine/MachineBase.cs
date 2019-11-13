@@ -37,6 +37,11 @@ public class MachineBase : MonoBehaviour
         {
             m_IsFront = !m_IsFront;
         }
+
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            m_IsFront = !m_IsFront;
+        }
     }
 
     // Update is called once per frame
@@ -47,8 +52,8 @@ public class MachineBase : MonoBehaviour
 
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
-        
-        if(!m_IsFront)
+
+        if (!m_IsFront)
         {
             h *= -1.0f;
         }
@@ -80,9 +85,9 @@ public class MachineBase : MonoBehaviour
             else
                 SetFinalPower(m_BoostMaxSpeed, 0.0f);
         }
-        m_Rigidbody.AddForce(transform.right.normalized * m_RotationPower * _h);
+        
 
-        if(m_CharacterBase.HasBall)
+        if (m_CharacterBase.HasBall)
             finalSpeed = finalSpeed * m_BallDecreaseRatio;
 
         if (m_CharacterBase.IsHitBullet)
@@ -100,7 +105,7 @@ public class MachineBase : MonoBehaviour
 
     void UniformVelocity(float targetVel, float accel)
     {
-        if(m_Rigidbody.velocity.magnitude < targetVel)
+        if (m_Rigidbody.velocity.magnitude < targetVel)
             m_Rigidbody.AddForce(transform.forward.normalized * m_MovementPower * accel);
     }
 
