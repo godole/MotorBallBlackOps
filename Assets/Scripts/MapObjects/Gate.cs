@@ -40,10 +40,9 @@ public class Gate : MonoBehaviour
             if (!character.photonView.IsMine)
                 return;
 
-            ActiveNextGate();
-
             if (character.HasBall)
             {
+                ActiveNextGate();
                 object score;
                 if (!PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(character.m_TeamNumber.ToString(), out score))
                 {
@@ -57,6 +56,12 @@ public class Gate : MonoBehaviour
                 PhotonNetwork.CurrentRoom.SetCustomProperties(props);
             }
         }
+        
+        else if(other.gameObject.tag == "Ball")
+        {
+            ActiveNextGate();
+        }
+
         GameObject.Find("GameSceneManager").GetComponent<GameSceneManager>().SetCreatePosition(m_RevivePosition);
     }
 
