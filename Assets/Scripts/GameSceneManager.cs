@@ -47,7 +47,7 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        if(PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient)
         {
             Hashtable props = new Hashtable
             {
@@ -84,7 +84,7 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
     void Update()
     {
         int i = 0;
-        foreach(var player in PhotonNetwork.PlayerList)
+        foreach (var player in PhotonNetwork.PlayerList)
         {
             m_PlayerName[i].text = player.NickName;
             ++i;
@@ -92,7 +92,7 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
 
         var props = PhotonNetwork.CurrentRoom.CustomProperties;
 
-        if(props.ContainsKey(RED_TEAM.ToString()))
+        if (props.ContainsKey(RED_TEAM.ToString()))
         {
             int score = (int)props[RED_TEAM.ToString()];
             m_RedScore.text = score.ToString();
@@ -128,7 +128,7 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(m_PlayerRespawnTime);
         CreatePlayer(m_CreatePosition);
     }
-    
+
     public void SetCreatePosition(Transform pos)
     {
         CreatePosition = pos;
@@ -140,4 +140,6 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
         props.Add(CREATE_ROTATION, pos.rotation);
         PhotonNetwork.CurrentRoom.SetCustomProperties(props);
     }
+
+    
 }

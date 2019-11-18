@@ -5,8 +5,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-public class Gate : MonoBehaviour
+public class Gate : MonoBehaviourPunCallbacks
 {
+    const string ACTIVE_GATE = "active_gate";
     bool m_IsActive = false;
     [SerializeField]
     int m_ID;
@@ -35,14 +36,16 @@ public class Gate : MonoBehaviour
 
         if (other.gameObject.tag == "Player")
         {
-            var character = other.gameObject.GetComponent<CharacterBase>();
+            ActiveNextGate();
 
+            var character = other.gameObject.GetComponent<CharacterBase>();
+            
             if (!character.photonView.IsMine)
                 return;
 
             if (character.HasBall)
             {
-                ActiveNextGate();
+                GameObject.Find("GameSceneManager").GetComponent<GameSceneManager>().SetCreatePosition(m_RevivePosition);
                 object score;
                 if (!PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(character.m_TeamNumber.ToString(), out score))
                 {
@@ -60,24 +63,27 @@ public class Gate : MonoBehaviour
         else if(other.gameObject.tag == "Ball")
         {
             ActiveNextGate();
+            GameObject.Find("GameSceneManager").GetComponent<GameSceneManager>().SetCreatePosition(m_RevivePosition);
         }
-
-        GameObject.Find("GameSceneManager").GetComponent<GameSceneManager>().SetCreatePosition(m_RevivePosition);
     }
 
     private void ActiveNextGate()
     {
-        var gates = GameObject.FindGameObjectsWithTag("Gate");
+        NetworkTool.SetCustomPropertiesSafe(ACTIVE_GATE, (int)ID);
+    }
 
-        foreach (var item in gates)
+    public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
+    {
+        var props = propertiesThatChanged;
+
+        if(props.ContainsKey(ACTIVE_GATE))
         {
-            Gate g = item.GetComponent<Gate>();
-            if (ID + 1 == g.ID || (ID == 7 && g.ID == 1))
+            if ((int)props[ACTIVE_GATE] + 1 == ID || ((int)props[ACTIVE_GATE] == 7 && ID == 1))
             {
-                IsActive = false;
-                g.IsActive = true;
-                break;
+                IsActive = true;
             }
+            else
+                IsActive = false;
         }
     }
 }
