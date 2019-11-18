@@ -46,8 +46,11 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField]
     Animator m_Animator;
 
-    public GameObject m_RedTeamSign;
-    public GameObject m_BlueTeamSign;
+    [SerializeField]
+    Material m_CharacterRedMaterial;
+
+    [SerializeField]
+    Material m_CharacterBlueMaterial;
 
     public Weapon[] m_Weapons;
 
@@ -115,12 +118,12 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
         if (m_PlayerID % 2 == 1)
         {
             m_TeamNumber = GameSceneManager.RED_TEAM;
-            m_RedTeamSign.SetActive(true);
+            m_CharacterMesh.GetComponentInChildren<SkinnedMeshRenderer>().material = m_CharacterRedMaterial;
         }
         else
         {
             m_TeamNumber = GameSceneManager.BLUE_TEAM;
-            m_BlueTeamSign.SetActive(true);
+            m_CharacterMesh.GetComponentInChildren<SkinnedMeshRenderer>().material = m_CharacterBlueMaterial;
         }
 
         if(photonView.IsMine)
