@@ -119,6 +119,8 @@ public class MachineBase : MonoBehaviour
             finalSpeed = finalSpeed - m_HitDecreaseSpeed;
 
         UniformVelocity(finalSpeed, finalAccel);
+
+        Debug.Log(m_Rigidbody.velocity.magnitude.ToString("F2"));
     }
 
     public void ResetVelocity()

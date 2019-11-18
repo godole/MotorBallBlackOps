@@ -1,19 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!64 &1937598043414247296
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2075184481594891001}
-  m_Material: {fileID: 13400000, guid: 3a38ce58b20296d4187fa6f41ee343f6, type: 2}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Convex: 0
-  m_CookingOptions: 14
-  m_Mesh: {fileID: 4300000, guid: 5ed45b56b913af9459a01d9c4db462e3, type: 3}
 --- !u!64 &4841226339584050394
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -51,7 +37,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7945632969389258771}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -60,7 +46,7 @@ Transform:
   - {fileID: 7545941004088187387}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2075184481594793049
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -122,12 +108,6 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 52d2cd194573f6045a8a4d966d388f3a, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5ed45b56b913af9459a01d9c4db462e3, type: 3}
---- !u!1 &2075184481594891001 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 100000, guid: 5ed45b56b913af9459a01d9c4db462e3,
-    type: 3}
-  m_PrefabInstance: {fileID: 2075184481594793049}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2075184481594656473 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 5ed45b56b913af9459a01d9c4db462e3,

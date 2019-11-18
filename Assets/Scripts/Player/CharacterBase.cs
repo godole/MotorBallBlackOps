@@ -107,7 +107,7 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
 
         if (m_CurrentHP <= 0)
         {
-            if (HasBall)
+            if (HasBall && photonView.IsMine)
                 PhotonNetwork.Instantiate("Ball", transform.position, new Quaternion(), 0);
 
             Instantiate(m_DestroyEff, transform.position, Quaternion.identity);
