@@ -19,6 +19,34 @@ public class MachineBase : MonoBehaviour
     public float m_HitDecreaseSpeed; //총 맞았을때 감소 속도
     public float m_ReverseSpeed;    //후진 속도
 
+    //배터리
+    float m_Battery;
+    float m_BatteryCapacity;
+    float m_BatteryConsume;
+    float m_BatteryUseCunsume;
+
+    //엔진 출력
+    float m_OverdriveLimit;
+    float m_MaximumSpeed;
+    float m_AcceleratingForce;
+
+    //기동성
+    float m_TotalWeight;
+    float m_Handling;
+    float m_BrakingForce;
+
+    //장갑
+    float m_Endurance;
+    float m_DefensePower;
+
+    //화력
+    float m_Damage;
+    float m_SprayPenetration;
+    float m_AttackSpeed;
+    float m_ReloadSpeed;
+    float m_ChargeTime;
+    float m_LockOnTime;
+
     bool m_IsFront = true;
 
     float m_CurMaxSpeed;
