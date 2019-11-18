@@ -85,10 +85,8 @@ public class MachineBase : MonoBehaviour
         {
             h *= -1.0f;
         }
-
-        float _h = (v < -0.1f ? -h : h);
-
-        transform.Rotate(new Vector3(0.0f, _h * m_RotationSpeed * Time.fixedDeltaTime, 0.0f));
+        
+        transform.Rotate(new Vector3(0.0f, h * m_RotationSpeed * Time.fixedDeltaTime, 0.0f));
 
         Vector3 tempv = m_Rigidbody.velocity;
         tempv.y = 0.0f;
@@ -114,7 +112,6 @@ public class MachineBase : MonoBehaviour
                 SetFinalPower(m_BoostMaxSpeed, 0.0f);
         }
         
-
         if (m_CharacterBase.HasBall)
             finalSpeed = finalSpeed * m_BallDecreaseRatio;
 
