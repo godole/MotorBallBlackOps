@@ -5,12 +5,8 @@ using UnityEngine;
 
 public class Pitstop : MonoBehaviour
 {
-    public Transform m_EndPoint;
-    GameSceneManager m_GameManager;
-
     private void Start()
     {
-        m_GameManager = GameObject.Find("GameSceneManager").GetComponent<GameSceneManager>();
     }
 
     // Start is called before the first frame update

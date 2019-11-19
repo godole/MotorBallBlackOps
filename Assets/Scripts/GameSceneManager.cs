@@ -10,6 +10,7 @@ using UnityEngine.UI;
 
 public class GameSceneManager : MonoBehaviourPunCallbacks
 {
+    static GameSceneManager Instance;
     // Start is called before the first frame update
     public GameObject m_ProgrammerGround;
     public GameObject m_ArtistGround;
@@ -44,6 +45,17 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
     Transform m_CreatePosition;
 
     public Transform CreatePosition { get => m_CreatePosition; set => m_CreatePosition = value; }
+    public static GameSceneManager getInstance
+    {
+        get
+        {
+            if (Instance == null)
+            {
+                Instance = FindObjectOfType(typeof(GameSceneManager)) as GameSceneManager;
+            }
+            return Instance;
+        }
+    }
 
     void Start()
     {

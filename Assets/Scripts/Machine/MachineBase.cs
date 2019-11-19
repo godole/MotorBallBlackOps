@@ -6,7 +6,6 @@ public class MachineBase : MonoBehaviour
 {
     Rigidbody m_Rigidbody;
     CharacterBase m_CharacterBase;
-    GameSceneManager m_GameManager;
 
     public Animator m_Animator;
 
@@ -56,7 +55,6 @@ public class MachineBase : MonoBehaviour
     {
         m_CharacterBase = GetComponent<CharacterBase>();
         m_Rigidbody = gameObject.GetComponent<Rigidbody>();
-        m_GameManager = GameObject.Find("GameSceneManager").GetComponent<GameSceneManager>();
     }
 
     private void Update()
@@ -119,8 +117,6 @@ public class MachineBase : MonoBehaviour
             finalSpeed = finalSpeed - m_HitDecreaseSpeed;
 
         UniformVelocity(finalSpeed, finalAccel);
-
-        Debug.Log(m_Rigidbody.velocity.magnitude.ToString("F2"));
     }
 
     public void ResetVelocity()

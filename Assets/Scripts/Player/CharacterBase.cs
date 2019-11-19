@@ -10,8 +10,6 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
 {
     Rigidbody m_RigidBody;
 
-    GameSceneManager m_GameManager;
-
     public float m_TakeOffRange;
 
     bool m_IsFront = true;
@@ -60,13 +58,11 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
         base.OnEnable();
         m_RigidBody = GetComponent<Rigidbody>();
 
-        m_GameManager = GameObject.Find("GameSceneManager").GetComponent<GameSceneManager>();
-
         CurrentHP = m_MaxHP;
 
         if (photonView.IsMine)
         {
-            m_PlayerID = m_GameManager.m_LocalID;
+            m_PlayerID = GameSceneManager.getInstance.m_LocalID;
         }
         else
         {
@@ -99,8 +95,8 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     void Update()
     {
         m_Ball.SetActive(m_HasBall);
-        
-        m_GameManager.m_HPUI[m_PlayerID - 1].value = CurrentHP / (float)m_MaxHP;
+
+        GameSceneManager.getInstance.m_HPUI[m_PlayerID - 1].value = CurrentHP / (float)m_MaxHP;
 
         if (transform.position.y < -50.0f)
             m_CurrentHP = 0;
@@ -142,7 +138,7 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
 
         m_Cam.GetComponent<CustomFreeLookCam>().SetTarget(null);
 
-        m_GameManager.RevivePlayer();
+        GameSceneManager.getInstance.RevivePlayer();
     }
 
     public void RPC(string method, RpcTarget target, params object[] parameters)

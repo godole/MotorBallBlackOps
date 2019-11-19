@@ -45,7 +45,7 @@ public class Gate : MonoBehaviourPunCallbacks
 
             if (character.HasBall)
             {
-                GameObject.Find("GameSceneManager").GetComponent<GameSceneManager>().SetCreatePosition(m_RevivePosition);
+                GameSceneManager.getInstance.SetCreatePosition(m_RevivePosition);
                 object score;
                 if (!PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(character.m_TeamNumber.ToString(), out score))
                 {
@@ -63,7 +63,7 @@ public class Gate : MonoBehaviourPunCallbacks
         else if(other.gameObject.tag == "Ball")
         {
             ActiveNextGate();
-            GameObject.Find("GameSceneManager").GetComponent<GameSceneManager>().SetCreatePosition(m_RevivePosition);
+            GameSceneManager.getInstance.SetCreatePosition(m_RevivePosition);
         }
     }
 
