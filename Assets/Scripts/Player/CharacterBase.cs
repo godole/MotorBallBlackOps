@@ -21,7 +21,7 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField]
     float m_ThrowPower = 0;
 
-    public GameObject m_Cam;
+    public CustomFreeLookCam m_Cam;
 
     public GameObject m_CharacterMesh;
 
@@ -96,7 +96,7 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     {
         m_Ball.SetActive(m_HasBall);
 
-        GameSceneManager.getInstance.m_HPUI[m_PlayerID - 1].value = CurrentHP / (float)m_MaxHP;
+        //GameSceneManager.getInstance.m_HPUI[m_PlayerID - 1].value = CurrentHP / (float)m_MaxHP;
 
         if (transform.position.y < -50.0f)
             m_CurrentHP = 0;
@@ -136,11 +136,11 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
         if (!photonView.IsMine)
             return;
 
-        m_Cam.GetComponent<CustomFreeLookCam>().SetTarget(null);
+        m_Cam.SetTarget(null);
 
         GameSceneManager.getInstance.RevivePlayer();
     }
-
+    
     public void RPC(string method, RpcTarget target, params object[] parameters)
     {
         photonView.RPC(method, target, parameters);
@@ -148,11 +148,12 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
 
     public void Reverse()
     {
+        m_Cam.UnLock();
         IsFront = !IsFront;
         m_CharacterMesh.transform.Rotate(new Vector3(0.0f, 180.0f, 0.0f));
 
-        m_Cam.transform.Rotate(0.0f, 180.0f, 0.0f);
-        m_Cam.GetComponent<CustomFreeLookCam>().IsFront = IsFront;
+        m_Cam.gameObject.transform.Rotate(0.0f, 180.0f, 0.0f);
+        m_Cam.IsFront = IsFront;
     }
 
     public void EnterPitstop(Vector3 endPoint, Quaternion rotation)
@@ -174,7 +175,7 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     {
         if(m_Weapons[index].AttackCheck())
         {
-            RPC("Attack", RpcTarget.AllViaServer, index, m_Cam.transform.forward);
+            RPC("Attack", RpcTarget.AllViaServer, index, m_Cam.ShotDirection);
             m_Weapons[index].StartDelay();    
         }
     }
@@ -201,6 +202,41 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
                 NetworkTool.SetCustomPropertiesSafe(GameSceneManager.BALL_OWNER_CHANGE, m_PlayerID);
             }
         }
+    }
+
+    public void LockOn()
+    {
+        if (!m_Cam.IsLockOn)
+        {
+            var targets = GameObject.FindGameObjectsWithTag("Player");
+            float minDist = float.MaxValue;
+            GameObject t = null;
+
+            foreach (var target in targets)
+            {
+                if (target.GetComponent<CharacterBase>().m_TeamNumber == m_TeamNumber)
+                    continue;
+                
+                Vector3 scrPos = Camera.main.WorldToScreenPoint(target.transform.position);
+
+                if (!Camera.main.pixelRect.Contains(scrPos) || scrPos.z < 0.0f)
+                    continue;
+
+                Vector2 dist = (Vector2)scrPos - Camera.main.pixelRect.center;
+                float distf = dist.magnitude;
+
+                if (distf < minDist)
+                {
+                    minDist = distf;
+                    t = target;
+                }
+            }
+
+            if(t != null)
+                m_Cam.LockOn(t.transform);
+        }
+        else
+            m_Cam.UnLock();
     }
 
     [PunRPC]

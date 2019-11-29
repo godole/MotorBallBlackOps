@@ -17271,6 +17271,11 @@ PrefabInstance:
       propertyPath: m_TiltMinY
       value: -75
       objectReference: {fileID: 0}
+    - target: {fileID: 6708952188128700866, guid: 674931602bfb9b544b28d3a222fc58b8,
+        type: 3}
+      propertyPath: m_AimSprite
+      value: 
+      objectReference: {fileID: 366427084}
     - target: {fileID: 1092642368, guid: 674931602bfb9b544b28d3a222fc58b8, type: 3}
       propertyPath: m_LocalPosition.y
       value: 2.2

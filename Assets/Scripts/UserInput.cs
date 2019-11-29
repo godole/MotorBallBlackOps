@@ -53,5 +53,10 @@ public class UserInput : MonoBehaviour
 
         if (Input.GetKey(KeyCode.F2))
             m_Client.CurrentHP = 0;
+
+        if(Input.GetKeyDown(KeyCode.Q))
+        {
+            m_Client.LockOn();
+        }
     }
 }

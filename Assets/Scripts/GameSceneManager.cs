@@ -124,7 +124,7 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
         m_UserInput = gameObject.GetComponent<UserInput>();
         m_UserInput.m_Client = character.GetComponent<CharacterBase>();
         m_Cam.SetTarget(character.transform);
-        character.GetComponent<CharacterBase>().m_Cam = m_Cam.gameObject;
+        character.GetComponent<CharacterBase>().m_Cam = m_Cam;
     }
 
     public void RevivePlayer()

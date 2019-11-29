@@ -20,6 +20,7 @@ public class CustomFreeLookCam : UnityStandardAssets.Cameras.PivotBasedCameraRig
     [SerializeField] private bool m_VerticalAutoReturn = false;           // set wether or not the vertical axis should auto return
     [SerializeField] private float m_TiltMaxY = 75f;                       // The maximum value of the x axis rotation of the pivot.
     [SerializeField] private float m_TiltMinY = 45f;
+    [SerializeField] private GameObject m_AimSprite;
 
     private float m_LookAngle;                    // The rig's y axis rotation.
     private float m_TiltAngle;                    // The pivot's x axis rotation.
@@ -29,8 +30,45 @@ public class CustomFreeLookCam : UnityStandardAssets.Cameras.PivotBasedCameraRig
     private Quaternion m_PivotTargetRot;
     private Quaternion m_TransformTargetRot;
     private bool m_IsFront = true;
+    private Transform m_LockOnTarget = null;
 
     public bool IsFront { get => m_IsFront; set => m_IsFront = value; }
+    public Vector3 ShotDirection
+    {
+        get
+        {
+            Vector3 dir = Vector3.zero;
+
+            if (m_LockOnTarget == null)
+                dir = transform.forward;
+            else
+            {
+                dir = m_LockOnTarget.position - transform.position;
+                dir.Normalize();
+            }
+
+            return dir;
+        }
+    }
+    public bool IsLockOn
+    {
+        get
+        {
+            return m_LockOnTarget != null;
+        }
+    }
+
+    public void LockOn(Transform target)
+    {
+        m_LockOnTarget = target;
+        Vector3 dir = target.position - transform.position;
+        m_LookAngle = Quaternion.LookRotation(dir, Vector3.up).eulerAngles.y - (m_IsFront ? 0.0f : 180.0f);
+    }
+
+    public void UnLock()
+    {
+        m_LockOnTarget = null;
+    }
 
     protected override void Awake()
     {
@@ -52,6 +90,18 @@ public class CustomFreeLookCam : UnityStandardAssets.Cameras.PivotBasedCameraRig
         {
             Cursor.lockState = m_LockCursor ? CursorLockMode.Locked : CursorLockMode.None;
             Cursor.visible = !m_LockCursor;
+        }
+        if(m_LockOnTarget != null)
+        {
+            Vector3 targetPos = Camera.main.WorldToScreenPoint(m_LockOnTarget.position);
+            m_AimSprite.transform.position = targetPos;
+
+            if (!Camera.main.pixelRect.Contains(targetPos))
+                m_LockOnTarget = null;
+        }
+        else
+        {
+            m_AimSprite.transform.position = Camera.main.pixelRect.center;
         }
     }
 
