@@ -128,7 +128,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c4fe7126d5e1e84faaf6dee20c475bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_TakeOffRange: 7
+  m_TakeOffWidth: 5.5
+  m_TakeOffHeight: 3
   m_PlayerID: -1
   m_ThrowPower: 135
   m_Cam: {fileID: 0}
@@ -417,7 +418,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_AttackDamage: 30
   m_AttackDelay: 1
-  m_AttackRange: 5
+  m_AttackWidth: 3
+  m_AttackHeight: 5
   m_AttackPower: 30
 --- !u!1 &213
 GameObject:

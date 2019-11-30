@@ -10,7 +10,10 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
 {
     Rigidbody m_RigidBody;
 
-    public float m_TakeOffRange;
+    [SerializeField]
+    float m_TakeOffWidth;
+    [SerializeField]
+    float m_TakeOffHeight;
 
     bool m_IsFront = true;
     bool m_HasBall = false;
@@ -35,6 +38,8 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     public bool IsHitBullet { get => m_IsHitBullet; set => m_IsHitBullet = value; }
     public int CurrentHP { get => m_CurrentHP; set => m_CurrentHP = value; }
     public bool IsFront { get => m_IsFront; set => m_IsFront = value; }
+    public float TakeOffWidth { get => m_TakeOffWidth; set => m_TakeOffWidth = value; }
+    public float TakeOffHeight { get => m_TakeOffHeight; set => m_TakeOffHeight = value; }
 
     public int m_MaxHP;
     int m_CurrentHP;
@@ -190,7 +195,16 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (!m_HasBall)
         {
-            var hit = Physics.OverlapSphere(transform.position, m_TakeOffRange, 1 << 11);
+            Vector3 dir = m_Cam.ShotDirection;
+            Vector3 center = transform.position + dir * m_TakeOffHeight / 2;
+            Vector3 size = new Vector3(m_TakeOffWidth, 1.0f, m_TakeOffHeight);
+            Quaternion rot = Quaternion.LookRotation(dir, Vector3.up);
+            var hit = Physics.OverlapBox(
+                center,
+                size / 2,
+                rot, 1 << 11);
+
+            GameObject.Find("DebugDraw").GetComponent<DebugDraw>().DrawBox(center, size, rot);
 
             foreach (var h in hit)
             {
