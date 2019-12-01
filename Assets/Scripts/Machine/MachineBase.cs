@@ -126,6 +126,11 @@ public class MachineBase : MonoBehaviour
         m_CurMaxSpeed = 0.0f;
     }
 
+    public void Boost(Vector2 dir)
+    {
+
+    }
+
     void UniformVelocity(float targetVel, float accel)
     {
         if (m_Rigidbody.velocity.magnitude < targetVel)

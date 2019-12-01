@@ -32,11 +32,23 @@ public class UserInput : MonoBehaviour
 
         if (Input.GetButtonDown("Fire3"))
         {
-            m_Client.RPC("ThrowBall", Photon.Pun.RpcTarget.AllViaServer, 
-                m_Client.m_Cam.transform.forward);
+            m_Client.ThrowStart();
+
         }
 
-        if(Input.GetKey(KeyCode.F))
+        if (Input.GetButtonUp("Fire3"))
+        {
+            m_Client.RPC("ThrowBall", Photon.Pun.RpcTarget.AllViaServer,
+                m_Client.m_Cam.transform.forward, m_Client.ThrowChargningPower);
+        }
+
+        if(Input.GetButtonDown("Jump"))
+        {
+
+        }
+
+
+        if (Input.GetKey(KeyCode.F))
         {
             m_Client.TakeOffBall();
         }

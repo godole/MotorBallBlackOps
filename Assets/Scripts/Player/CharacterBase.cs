@@ -3,7 +3,7 @@ using Photon.Pun.UtilityScripts;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
@@ -18,11 +18,13 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     bool m_IsFront = true;
     bool m_HasBall = false;
     bool m_IsHitBullet = false;
+    bool m_IsThrowing = false;
     [SerializeField]
     int m_PlayerID = -1;
 
     [SerializeField]
     float m_ThrowPower = 0;
+    float m_throwChargningPower = 0.0f;
 
     public CustomFreeLookCam m_Cam;
 
@@ -40,6 +42,9 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     public bool IsFront { get => m_IsFront; set => m_IsFront = value; }
     public float TakeOffWidth { get => m_TakeOffWidth; set => m_TakeOffWidth = value; }
     public float TakeOffHeight { get => m_TakeOffHeight; set => m_TakeOffHeight = value; }
+    public float ThrowPower { get => m_ThrowPower; set => m_ThrowPower = value; }
+    public bool IsThrowing { get => m_IsThrowing; set => m_IsThrowing = value; }
+    public float ThrowChargningPower { get => m_throwChargningPower; set => m_throwChargningPower = value; }
 
     public int m_MaxHP;
     int m_CurrentHP;
@@ -55,6 +60,8 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField]
     Material m_CharacterBlueMaterial;
 
+    Slider m_ThrowGageSlider;
+
     public Weapon[] m_Weapons;
 
     // Start is called before the first frame update
@@ -62,6 +69,9 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     {
         base.OnEnable();
         m_RigidBody = GetComponent<Rigidbody>();
+
+        m_ThrowGageSlider = GameObject.Find("ThrowGage").GetComponent<Slider>();
+        m_ThrowGageSlider.gameObject.SetActive(false);
 
         CurrentHP = m_MaxHP;
 
@@ -134,6 +144,17 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
                 weapon.SetWeaponUI();
             }
         }
+
+        if (m_IsThrowing)
+        {
+            m_throwChargningPower += m_ThrowPower * Time.deltaTime;
+            
+            if (m_throwChargningPower > m_ThrowPower)
+                m_throwChargningPower = m_ThrowPower;
+
+            m_ThrowGageSlider.value = m_throwChargningPower / m_ThrowPower;
+        }
+
     }
 
     private void OnDestroy()
@@ -253,6 +274,12 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
             m_Cam.UnLock();
     }
 
+    public void ThrowStart()
+    {
+        m_ThrowGageSlider.gameObject.SetActive(true);
+        m_IsThrowing = true;
+    }
+
     [PunRPC]
     void Hit(Vector3 force, int dmg)
     {
@@ -264,18 +291,26 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     [PunRPC]
-    void ThrowBall(Vector3 dir)
+    void ThrowBall(Vector3 dir, float power)
     {
         if (!HasBall || !photonView.IsMine)
             return;
 
-        m_HasBall = false;
+        m_ThrowGageSlider.gameObject.SetActive(false);
+
+
+        var ball = PhotonNetwork.Instantiate("Ball", transform.position, Quaternion.identity);
+        ball.GetComponent<MotorBall>().Shot(transform.position, dir, power);
 
         NetworkTool.SetCustomPropertiesSafe(GameSceneManager.BALL_OWNER_CHANGE, -2);
+        m_throwChargningPower = 0.0f;
+        m_IsThrowing = false;
+        HasBall = false;
+    }
 
-        var ball = PhotonNetwork.Instantiate("Ball", 
-            transform.position, new Quaternion());
-        ball.GetComponent<MotorBall>().Shot(transform.position, dir, m_ThrowPower);
+    public void Boost(Vector2 dir)
+    {
+        gameObject.GetComponent<MachineBase>().Boost(dir);
     }
 
     public void PlayAnimation(string name, string layerName)

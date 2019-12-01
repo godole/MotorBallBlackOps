@@ -8,15 +8,15 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 597}
-  - component: {fileID: 1108}
-  - component: {fileID: 1222}
-  - component: {fileID: 1224}
-  - component: {fileID: 1223}
-  - component: {fileID: 1228}
-  - component: {fileID: 1149}
-  - component: {fileID: 1132}
-  - component: {fileID: 1229}
+  - component: {fileID: 550}
+  - component: {fileID: 1014}
+  - component: {fileID: 1122}
+  - component: {fileID: 1124}
+  - component: {fileID: 1123}
+  - component: {fileID: 1128}
+  - component: {fileID: 1051}
+  - component: {fileID: 1037}
+  - component: {fileID: 1129}
   m_Layer: 11
   m_Name: TestPlayer
   m_TagString: Player
@@ -24,7 +24,7 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &597
+--- !u!4 &550
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -35,15 +35,15 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 601}
-  - {fileID: 604}
-  - {fileID: 606}
-  - {fileID: 607}
+  - {fileID: 551}
+  - {fileID: 552}
+  - {fileID: 554}
+  - {fileID: 555}
   - {fileID: 8211910473367770694}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &1108
+--- !u!54 &1014
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -59,7 +59,7 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 80
   m_CollisionDetection: 1
---- !u!114 &1222
+--- !u!114 &1122
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -77,13 +77,13 @@ MonoBehaviour:
   Synchronization: 2
   OwnershipTransfer: 0
   ObservedComponents:
-  - {fileID: 1224}
-  - {fileID: 1223}
-  - {fileID: 1229}
+  - {fileID: 1124}
+  - {fileID: 1123}
+  - {fileID: 1129}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1224
+--- !u!114 &1124
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -116,7 +116,7 @@ MonoBehaviour:
     InterpolateOption: 0
     InterpolateMoveTowardsSpeed: 1
     InterpolateLerpSpeed: 0
---- !u!114 &1223
+--- !u!114 &1123
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -140,15 +140,15 @@ MonoBehaviour:
   m_Ball: {fileID: 210}
   m_MaxHP: 100
   m_TeamNumber: -1
-  m_Animator: {fileID: 1132}
+  m_Animator: {fileID: 1037}
   m_CharacterRedMaterial: {fileID: 2100000, guid: 58c3b42ccbfb1614a95b741ebe79e872,
     type: 2}
   m_CharacterBlueMaterial: {fileID: 2100000, guid: c5cd509cdc7e9aa4880ea53619922d78,
     type: 2}
   m_Weapons:
-  - {fileID: 1230}
-  - {fileID: 1231}
---- !u!114 &1228
+  - {fileID: 1130}
+  - {fileID: 1131}
+--- !u!114 &1128
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -160,7 +160,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b164929027362db44a0c8160c1e07318, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Animator: {fileID: 1132}
+  m_Animator: {fileID: 1037}
   m_MovementPower: 65
   m_BoostMaxSpeed: 60
   m_NormalMaxSpeed: 40
@@ -169,7 +169,7 @@ MonoBehaviour:
   m_BallDecreaseRatio: 0.6
   m_HitDecreaseSpeed: 20
   m_ReverseSpeed: 0
---- !u!136 &1149
+--- !u!136 &1051
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -183,7 +183,7 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!95 &1132
+--- !u!95 &1037
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 0
@@ -202,7 +202,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &1229
+--- !u!114 &1129
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -246,9 +246,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 601}
-  - component: {fileID: 1143}
-  - component: {fileID: 1221}
+  - component: {fileID: 551}
+  - component: {fileID: 1046}
+  - component: {fileID: 1121}
   m_Layer: 12
   m_Name: CatchBall
   m_TagString: Character
@@ -256,7 +256,7 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &601
+--- !u!4 &551
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -267,10 +267,10 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 597}
+  m_Father: {fileID: 550}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &1143
+--- !u!135 &1046
 SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -283,7 +283,7 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 3.3
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1221
+--- !u!114 &1121
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -295,7 +295,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f02e1e5e58fe2c49bdc0ad6269dd980, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Character: {fileID: 1223}
+  m_Character: {fileID: 1123}
 --- !u!1 &210
 GameObject:
   m_ObjectHideFlags: 0
@@ -304,9 +304,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 604}
-  - component: {fileID: 1042}
-  - component: {fileID: 962}
+  - component: {fileID: 552}
+  - component: {fileID: 954}
+  - component: {fileID: 880}
   m_Layer: 10
   m_Name: Ball
   m_TagString: Ball
@@ -314,7 +314,7 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &604
+--- !u!4 &552
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -325,10 +325,10 @@ Transform:
   m_LocalPosition: {x: 1.15, y: 0.13, z: -0.03}
   m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
   m_Children: []
-  m_Father: {fileID: 597}
+  m_Father: {fileID: 550}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &1042
+--- !u!33 &954
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -336,7 +336,7 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 210}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &962
+--- !u!23 &880
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -381,8 +381,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 607}
-  - component: {fileID: 1231}
+  - component: {fileID: 555}
+  - component: {fileID: 1131}
   m_Layer: 11
   m_Name: Sword
   m_TagString: Untagged
@@ -390,7 +390,7 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &607
+--- !u!4 &555
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -401,10 +401,10 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 597}
+  m_Father: {fileID: 550}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1231
+--- !u!114 &1131
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -429,8 +429,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 606}
-  - component: {fileID: 1230}
+  - component: {fileID: 554}
+  - component: {fileID: 1130}
   m_Layer: 11
   m_Name: Gun
   m_TagString: Untagged
@@ -438,7 +438,7 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &606
+--- !u!4 &554
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -449,10 +449,10 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 597}
+  m_Father: {fileID: 550}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1230
+--- !u!114 &1130
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -474,7 +474,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 597}
+    m_TransformParent: {fileID: 550}
     m_Modifications:
     - target: {fileID: 100070, guid: cc282405014c8dc42a5f676036084398, type: 3}
       propertyPath: m_Name
