@@ -30,7 +30,7 @@ public class CustomFreeLookCam : UnityStandardAssets.Cameras.PivotBasedCameraRig
     private Quaternion m_PivotTargetRot;
     private Quaternion m_TransformTargetRot;
     private bool m_IsFront = true;
-    private Transform m_LockOnTarget = null;
+    Transform m_LockOnTarget = null;
 
     public bool IsFront { get => m_IsFront; set => m_IsFront = value; }
     public Vector3 ShotDirection
@@ -57,6 +57,8 @@ public class CustomFreeLookCam : UnityStandardAssets.Cameras.PivotBasedCameraRig
             return m_LockOnTarget != null;
         }
     }
+
+    public Transform LockOnTarget { get => m_LockOnTarget; set => m_LockOnTarget = value; }
 
     public void LockOn(Transform target)
     {

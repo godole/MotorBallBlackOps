@@ -44,7 +44,10 @@ public class UserInput : MonoBehaviour
 
         if(Input.GetButtonDown("Jump"))
         {
+            float h = Input.GetAxis("Horizontal");
+            float v = Input.GetAxis("Vertical");
 
+            m_Client.Boost(new Vector2(h, v));
         }
 
 

@@ -17,6 +17,8 @@ public class MachineBase : MonoBehaviour
     public float m_BallDecreaseRatio;//공 먹었을때 감소 비율
     public float m_HitDecreaseSpeed; //총 맞았을때 감소 속도
     public float m_ReverseSpeed;    //후진 속도
+    public float m_DashPower;
+    public float m_DashTime;
 
     //배터리
     float m_Battery;
@@ -47,8 +49,11 @@ public class MachineBase : MonoBehaviour
     float m_LockOnTime;
 
     bool m_IsFront = true;
+    bool m_IsBoostEnable = true;
 
     float m_CurMaxSpeed;
+
+    Vector3 m_tempVelocity;
 
     // Start is called before the first frame update
     void OnEnable()
@@ -126,9 +131,23 @@ public class MachineBase : MonoBehaviour
         m_CurMaxSpeed = 0.0f;
     }
 
-    public void Boost(Vector2 dir)
+    public void Boost(Vector3 dir)
     {
+        if (!m_IsBoostEnable)
+            return;
 
+        //m_tempVelocity = m_Rigidbody.velocity;
+        m_Rigidbody.velocity = Vector3.zero;
+        m_Rigidbody.AddForce(dir * m_DashPower, ForceMode.Impulse);
+        StartCoroutine(StopBoost());
+    }
+
+    IEnumerator StopBoost()
+    {
+        m_IsBoostEnable = false;
+        yield return new WaitForSeconds(m_DashTime);
+        m_IsBoostEnable = true;
+        //m_Rigidbody.velocity = m_tempVelocity;
     }
 
     void UniformVelocity(float targetVel, float accel)

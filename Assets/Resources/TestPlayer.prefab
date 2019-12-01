@@ -169,6 +169,8 @@ MonoBehaviour:
   m_BallDecreaseRatio: 0.6
   m_HitDecreaseSpeed: 20
   m_ReverseSpeed: 0
+  m_DashPower: 50
+  m_DashTime: 1
 --- !u!136 &1051
 CapsuleCollider:
   m_ObjectHideFlags: 0

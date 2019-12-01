@@ -310,7 +310,36 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
 
     public void Boost(Vector2 dir)
     {
-        gameObject.GetComponent<MachineBase>().Boost(dir);
+        Vector3 tempDir = Vector3.zero;
+        Transform tempTransform = null;
+        if (m_Cam.IsLockOn)
+        {
+            tempTransform = m_Cam.gameObject.transform;
+            Vector3 d = m_Cam.LockOnTarget.position - transform.position;
+            Vector3 rotEuler = transform.rotation.eulerAngles;
+            rotEuler.y = Quaternion.LookRotation(d, Vector3.up).eulerAngles.y;
+            transform.eulerAngles = rotEuler;
+        }
+        else
+        {
+            tempTransform = gameObject.transform;
+        }
+
+        if (dir.x > 0.0f)
+            tempDir += m_Cam.gameObject.transform.right;
+
+        if (dir.x < 0.0f)
+            tempDir -= m_Cam.gameObject.transform.right;
+
+        if (dir.y > 0.0f)
+            tempDir += m_Cam.gameObject.transform.forward;
+
+        if (dir.y < 0.0f)
+            tempDir -= m_Cam.gameObject.transform.forward;
+
+        tempDir.Normalize();
+
+        gameObject.GetComponent<MachineBase>().Boost(tempDir);
     }
 
     public void PlayAnimation(string name, string layerName)
