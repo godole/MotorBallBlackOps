@@ -44,6 +44,8 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
 
     Transform m_CreatePosition;
 
+    Slider m_ThrowGageSlider;
+
     public Transform CreatePosition { get => m_CreatePosition; set => m_CreatePosition = value; }
     public static GameSceneManager getInstance
     {
@@ -56,6 +58,8 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
             return Instance;
         }
     }
+
+    public Slider ThrowGageSlider { get => m_ThrowGageSlider; set => m_ThrowGageSlider = value; }
 
     void Start()
     {
@@ -87,6 +91,9 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
         {
             PhotonNetwork.Instantiate("Ball", m_BallStartPosition.position, new Quaternion(), 0);
         }
+
+        ThrowGageSlider = GameObject.Find("ThrowGage").GetComponent<Slider>();
+        ThrowGageSlider.gameObject.SetActive(false);
 
         SetCreatePosition(m_StartPosition[m_LocalID - 1]);
         CreatePlayer(m_StartPosition[m_LocalID - 1]);

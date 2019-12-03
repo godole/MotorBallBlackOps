@@ -60,7 +60,6 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField]
     Material m_CharacterBlueMaterial;
 
-    Slider m_ThrowGageSlider;
 
     public Weapon[] m_Weapons;
 
@@ -69,10 +68,7 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     {
         base.OnEnable();
         m_RigidBody = GetComponent<Rigidbody>();
-
-        m_ThrowGageSlider = GameObject.Find("ThrowGage").GetComponent<Slider>();
-        m_ThrowGageSlider.gameObject.SetActive(false);
-
+        
         CurrentHP = m_MaxHP;
 
         if (photonView.IsMine)
@@ -111,7 +107,7 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     {
         m_Ball.SetActive(m_HasBall);
 
-        //GameSceneManager.getInstance.m_HPUI[m_PlayerID - 1].value = CurrentHP / (float)m_MaxHP;
+        GameSceneManager.getInstance.m_HPUI[m_PlayerID - 1].value = CurrentHP / (float)m_MaxHP;
 
         if (transform.position.y < -50.0f)
             m_CurrentHP = 0;
@@ -152,7 +148,7 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
             if (m_throwChargningPower > m_ThrowPower)
                 m_throwChargningPower = m_ThrowPower;
 
-            m_ThrowGageSlider.value = m_throwChargningPower / m_ThrowPower;
+            GameSceneManager.getInstance.ThrowGageSlider.value = m_throwChargningPower / m_ThrowPower;
         }
 
     }
@@ -276,7 +272,10 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
 
     public void ThrowStart()
     {
-        m_ThrowGageSlider.gameObject.SetActive(true);
+        if (!HasBall)
+            return;
+
+        GameSceneManager.getInstance.ThrowGageSlider.gameObject.SetActive(true);
         m_IsThrowing = true;
     }
 
@@ -296,7 +295,7 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
         if (!HasBall || !photonView.IsMine)
             return;
 
-        m_ThrowGageSlider.gameObject.SetActive(false);
+        GameSceneManager.getInstance.ThrowGageSlider.gameObject.SetActive(false);
 
 
         var ball = PhotonNetwork.Instantiate("Ball", transform.position, Quaternion.identity);

@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 550}
-  - component: {fileID: 1014}
+  - component: {fileID: 1015}
   - component: {fileID: 1122}
-  - component: {fileID: 1124}
+  - component: {fileID: 1125}
   - component: {fileID: 1123}
   - component: {fileID: 1128}
   - component: {fileID: 1051}
@@ -38,12 +38,12 @@ Transform:
   - {fileID: 551}
   - {fileID: 552}
   - {fileID: 554}
-  - {fileID: 555}
   - {fileID: 8211910473367770694}
+  - {fileID: 555}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &1014
+--- !u!54 &1015
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -77,13 +77,13 @@ MonoBehaviour:
   Synchronization: 2
   OwnershipTransfer: 0
   ObservedComponents:
-  - {fileID: 1124}
+  - {fileID: 1125}
   - {fileID: 1123}
   - {fileID: 1129}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1124
+--- !u!114 &1125
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -146,8 +146,8 @@ MonoBehaviour:
   m_CharacterBlueMaterial: {fileID: 2100000, guid: c5cd509cdc7e9aa4880ea53619922d78,
     type: 2}
   m_Weapons:
-  - {fileID: 1130}
   - {fileID: 1131}
+  - {fileID: 1130}
 --- !u!114 &1128
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -249,7 +249,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 551}
-  - component: {fileID: 1046}
+  - component: {fileID: 1047}
   - component: {fileID: 1121}
   m_Layer: 12
   m_Name: CatchBall
@@ -272,7 +272,7 @@ Transform:
   m_Father: {fileID: 550}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &1046
+--- !u!135 &1047
 SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -307,8 +307,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 552}
-  - component: {fileID: 954}
-  - component: {fileID: 880}
+  - component: {fileID: 955}
+  - component: {fileID: 881}
   m_Layer: 10
   m_Name: Ball
   m_TagString: Ball
@@ -330,7 +330,7 @@ Transform:
   m_Father: {fileID: 550}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &954
+--- !u!33 &955
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -338,7 +338,7 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 210}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &880
+--- !u!23 &881
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -383,8 +383,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 555}
-  - component: {fileID: 1131}
+  - component: {fileID: 554}
+  - component: {fileID: 1130}
   m_Layer: 11
   m_Name: Sword
   m_TagString: Untagged
@@ -392,7 +392,7 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &555
+--- !u!4 &554
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -404,9 +404,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 550}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1131
+--- !u!114 &1130
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -431,16 +431,16 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 554}
-  - component: {fileID: 1130}
+  - component: {fileID: 555}
+  - component: {fileID: 1131}
   m_Layer: 11
-  m_Name: Gun
+  m_Name: Shotgun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &554
+--- !u!4 &555
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -452,9 +452,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 550}
-  m_RootOrder: 2
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1130
+--- !u!114 &1131
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -463,14 +463,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 213}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d44b5fb3967f9954ab287c42f87be498, type: 3}
+  m_Script: {fileID: 11500000, guid: ef2e8ca828c3abb44a90e013d637088c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Bullet: {fileID: 9169712586877461207, guid: 88b7a051624972c46876cebeb8aa24b6,
-    type: 3}
-  m_MaxBulletCapacity: 30
-  m_CurBulletCapacity: 0
-  m_ShotDelay: 1
+  m_MaxBulletCapacity: 12
+  m_CurBulletCapacity: 12
+  m_Range: 10
+  m_ShotDelay: 1.5
+  m_ShotAngle: 40
+  m_Damage: 20
 --- !u!1001 &8211910473367637120
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -512,7 +513,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400070, guid: cc282405014c8dc42a5f676036084398, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 400070, guid: cc282405014c8dc42a5f676036084398, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
