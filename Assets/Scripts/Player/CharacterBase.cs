@@ -15,6 +15,7 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField]
     float m_TakeOffHeight;
 
+    bool m_IsInPitstop = false;
     bool m_IsFront = true;
     bool m_HasBall = false;
     bool m_IsHitBullet = false;
@@ -45,6 +46,7 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     public float ThrowPower { get => m_ThrowPower; set => m_ThrowPower = value; }
     public bool IsThrowing { get => m_IsThrowing; set => m_IsThrowing = value; }
     public float ThrowChargningPower { get => m_throwChargningPower; set => m_throwChargningPower = value; }
+    public bool IsInPitstop { get => m_IsInPitstop; set => m_IsInPitstop = value; }
 
     public int m_MaxHP;
     int m_CurrentHP;
@@ -178,19 +180,39 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
         m_Cam.IsFront = IsFront;
     }
 
-    public void EnterPitstop(Vector3 endPoint, Quaternion rotation)
+    public void EnterPitstop()
     {
         if (!photonView.IsMine)
             return;
 
+        IsInPitstop = true;
+
         m_CurrentHP = m_MaxHP;
+
+        gameObject.GetComponent<MachineBase>().ResetVelocity();
+
+        var renderer = GetComponentInChildren<Renderer>();
+
+        SetVisible(false);
+    }
+
+    public void ExitPitstop(Vector3 endPoint, Quaternion rotation)
+    {
+        IsInPitstop = false;
         transform.position = endPoint;
         transform.rotation = rotation;
 
-        foreach (var weapon in m_Weapons)
-            weapon.Reload();
+        SetVisible(true);
+    }
 
-        gameObject.GetComponent<MachineBase>().ResetVelocity();
+    void SetVisible(bool bIs)
+    {
+        var renderer = GetComponentsInChildren<Renderer>();
+
+        foreach (var r in renderer)
+        {
+            r.enabled = bIs;
+        }
     }
     
     public void AttackCheck(int index)
@@ -206,6 +228,17 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     void Attack(int index, Vector3 dir)
     {
         m_Weapons[index].Attack(dir);
+    }
+
+    [PunRPC]
+    void ChangeWeapon(string name, int index)
+    {
+        Destroy(m_Weapons[index].gameObject);
+        var w = GameSceneManager.getInstance.CreateWeapon(name);
+        w.transform.parent = transform;
+        w.transform.localPosition = Vector3.zero;
+        m_Weapons[index] = w.GetComponent<Weapon>();
+        m_Weapons[index].Character = this;
     }
 
     public void TakeOffBall()

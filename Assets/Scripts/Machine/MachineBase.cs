@@ -81,6 +81,9 @@ public class MachineBase : MonoBehaviour
         if (m_Rigidbody == null)
             return;
 
+        if (m_CharacterBase.IsInPitstop)
+            return;
+
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
 

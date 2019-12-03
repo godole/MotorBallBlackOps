@@ -46,6 +46,8 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
 
     Slider m_ThrowGageSlider;
 
+    [SerializeField] GameObject[] m_Weapons;
+
     public Transform CreatePosition { get => m_CreatePosition; set => m_CreatePosition = value; }
     public static GameSceneManager getInstance
     {
@@ -160,5 +162,19 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
         PhotonNetwork.CurrentRoom.SetCustomProperties(props);
     }
 
-    
+    public GameObject CreateWeapon(string name)
+    {
+        GameObject weapon = null;
+
+        foreach(var w in m_Weapons)
+        {
+            if (w.name == name)
+            {
+                weapon = Instantiate(w);
+                break;
+            }
+        }
+
+        return weapon;
+    }
 }

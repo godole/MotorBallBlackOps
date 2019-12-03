@@ -51,5 +51,6 @@ MonoBehaviour:
   - Attack
   - ThrowBall
   - AttackCheck
+  - ChangeWeapon
   DisableAutoOpenWizard: 1
   ShowSettings: 0

@@ -20,6 +20,9 @@ public class UserInput : MonoBehaviour
         if (m_Client == null)
             return;
 
+        if (m_Client.IsInPitstop)
+            return;
+
         if (Input.GetButtonDown("Fire1"))
         {
             m_Client.AttackCheck(0);

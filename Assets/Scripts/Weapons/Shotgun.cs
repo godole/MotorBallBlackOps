@@ -56,4 +56,10 @@ public class Shotgun : Weapon
         yield return new WaitForSeconds(m_ShotDelay);
         IsAttackEnable = true;
     }
+
+    public override void SetWeaponUI()
+    {
+        GameSceneManager.getInstance.m_MaxBulletCapacity.text = m_MaxBulletCapacity.ToString();
+        GameSceneManager.getInstance.m_CurBulletCapacity.text = m_CurBulletCapacity.ToString();
+    }
 }
