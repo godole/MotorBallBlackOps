@@ -150,7 +150,7 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
             if (m_throwChargningPower > m_ThrowPower)
                 m_throwChargningPower = m_ThrowPower;
 
-            GameSceneManager.getInstance.ThrowGageSlider.value = m_throwChargningPower / m_ThrowPower;
+            UIController.getInstance.PlayPanel.ThrowGageSlider.value = m_throwChargningPower / m_ThrowPower;
         }
 
     }
@@ -194,6 +194,8 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
         var renderer = GetComponentInChildren<Renderer>();
 
         SetVisible(false);
+
+        m_Cam.gameObject.GetComponent<CameraController>().SetFreeLockCameraActive(false);
     }
 
     public void ExitPitstop(Vector3 endPoint, Quaternion rotation)
@@ -308,7 +310,7 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
         if (!HasBall)
             return;
 
-        GameSceneManager.getInstance.ThrowGageSlider.gameObject.SetActive(true);
+        UIController.getInstance.PlayPanel.ThrowGageSlider.gameObject.SetActive(true);
         m_IsThrowing = true;
     }
 
@@ -328,7 +330,7 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
         if (!HasBall || !photonView.IsMine)
             return;
 
-        GameSceneManager.getInstance.ThrowGageSlider.gameObject.SetActive(false);
+        UIController.getInstance.PlayPanel.ThrowGageSlider.gameObject.SetActive(false);
 
 
         var ball = PhotonNetwork.Instantiate("Ball", transform.position, Quaternion.identity);

@@ -44,7 +44,10 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
 
     Transform m_CreatePosition;
 
-    Slider m_ThrowGageSlider;
+    GameObject m_Player;
+    
+    string m_SelectedLeftWeaponName;
+    string m_SelectedRightWeaponName;
 
     [SerializeField] GameObject[] m_Weapons;
 
@@ -61,7 +64,7 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public Slider ThrowGageSlider { get => m_ThrowGageSlider; set => m_ThrowGageSlider = value; }
+    public GameObject Player { get => m_Player; set => m_Player = value; }
 
     void Start()
     {
@@ -94,11 +97,41 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
             PhotonNetwork.Instantiate("Ball", m_BallStartPosition.position, new Quaternion(), 0);
         }
 
-        ThrowGageSlider = GameObject.Find("ThrowGage").GetComponent<Slider>();
-        ThrowGageSlider.gameObject.SetActive(false);
-
         SetCreatePosition(m_StartPosition[m_LocalID - 1]);
         CreatePlayer(m_StartPosition[m_LocalID - 1]);
+    }
+
+    public void SetLeftWeaponType(string x)
+    {
+        m_SelectedLeftWeaponName = x;
+    }
+
+    public void SetRightWeaponType(string x)
+    {
+        m_SelectedRightWeaponName = x;
+    }
+
+    public void ExitPitstop()
+    {
+        var props = PhotonNetwork.CurrentRoom.CustomProperties;
+        Vector3 exitPos = Vector3.zero;
+        Quaternion exitRot = Quaternion.identity;
+
+        if (props.ContainsKey(GameSceneManager.CREATE_POSITION))
+        {
+            exitPos = (Vector3)props[GameSceneManager.CREATE_POSITION];
+        }
+
+        if (props.ContainsKey(GameSceneManager.CREATE_ROTATION))
+        {
+            exitRot = (Quaternion)props[GameSceneManager.CREATE_ROTATION];
+        }
+
+        var character = Player.GetComponent<CharacterBase>();
+        character.RPC("ChangeWeapon", RpcTarget.AllBufferedViaServer, m_SelectedLeftWeaponName, 0);
+        character.RPC("ChangeWeapon", RpcTarget.AllBufferedViaServer, m_SelectedRightWeaponName, 1);
+        m_Cam.gameObject.GetComponent<CameraController>().SetFreeLockCameraActive(true);
+        character.ExitPitstop(exitPos, exitRot);
     }
 
     // Update is called once per frame
@@ -126,7 +159,7 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
         }
     }
 
-    void CreatePlayer(Transform pos)
+    GameObject CreatePlayer(Transform pos)
     {
         var character = PhotonNetwork.Instantiate("TestPlayer", pos.position, pos.rotation, 0);
 
@@ -134,6 +167,8 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
         m_UserInput.m_Client = character.GetComponent<CharacterBase>();
         m_Cam.SetTarget(character.transform);
         character.GetComponent<CharacterBase>().m_Cam = m_Cam;
+
+        return character;
     }
 
     public void RevivePlayer()
