@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class Sword : Weapon
 {
-    
-
     public int m_AttackDamage;
     public float m_AttackDelay;
     public float m_AttackWidth;

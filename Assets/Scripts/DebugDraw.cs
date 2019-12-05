@@ -23,6 +23,6 @@ public class DebugDraw : MonoBehaviour
     {
         GameObject test = Instantiate(m_DebugDrawBox, center, rot);
         test.transform.localScale = size;
-        Destroy(test, 1.0f);
+        //Destroy(test, 1.0f);
     }
 }
