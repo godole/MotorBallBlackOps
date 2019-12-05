@@ -17,9 +17,9 @@ public class Shotgun : Weapon
         return m_CurBulletCapacity > 0 && IsAttackEnable;
     }
 
-    public override void Attack(Vector3 dir)
+    public override void AttackDown(Vector3 dir)
     {
-        if (!IsAttackEnable)
+        if (!Character.photonView.IsMine)
             return;
 
         m_CurBulletCapacity--;

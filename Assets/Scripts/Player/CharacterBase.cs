@@ -70,7 +70,7 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     {
         base.OnEnable();
         m_RigidBody = GetComponent<Rigidbody>();
-        
+
         CurrentHP = m_MaxHP;
 
         if (photonView.IsMine)
@@ -135,7 +135,7 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
             m_CharacterMesh.GetComponentInChildren<SkinnedMeshRenderer>().material = m_CharacterBlueMaterial;
         }
 
-        if(photonView.IsMine)
+        if (photonView.IsMine)
         {
             foreach (var weapon in m_Weapons)
             {
@@ -146,7 +146,7 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
         if (m_IsThrowing)
         {
             m_throwChargningPower += m_ThrowPower * Time.deltaTime;
-            
+
             if (m_throwChargningPower > m_ThrowPower)
                 m_throwChargningPower = m_ThrowPower;
 
@@ -164,7 +164,7 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
 
         GameSceneManager.getInstance.RevivePlayer();
     }
-    
+
     public void RPC(string method, RpcTarget target, params object[] parameters)
     {
         photonView.RPC(method, target, parameters);
@@ -216,20 +216,32 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
             r.enabled = bIs;
         }
     }
-    
+
     public void AttackCheck(int index)
     {
-        if(m_Weapons[index].AttackCheck())
+        if (m_Weapons[index].AttackCheck())
         {
-            RPC("Attack", RpcTarget.AllViaServer, index, m_Cam.ShotDirection);
-            m_Weapons[index].StartDelay();    
+            RPC("AttackDown", RpcTarget.AllViaServer, index, m_Cam.ShotDirection);
+            m_Weapons[index].StartDelay();
         }
     }
 
     [PunRPC]
-    void Attack(int index, Vector3 dir)
+    void AttackDown(int index, Vector3 dir)
     {
-        m_Weapons[index].Attack(dir);
+        m_Weapons[index].AttackDown(dir);
+    }
+
+    [PunRPC]
+    void AttackUp(int index, Vector3 dir)
+    {
+        m_Weapons[index].AttackUp(dir);
+    }
+
+    [PunRPC]
+    void Attacking(int index, Vector3 dir)
+    {
+        m_Weapons[index].Attacking(dir);
     }
 
     [PunRPC]

@@ -28,9 +28,29 @@ public class UserInput : MonoBehaviour
             m_Client.AttackCheck(0);
         }
 
-        if(Input.GetButtonDown("Fire2"))
+        if (Input.GetButtonUp("Fire1"))
+        {
+            m_Client.RPC("AttackUp", Photon.Pun.RpcTarget.AllBufferedViaServer, 0, m_Client.m_Cam.ShotDirection);
+        }
+
+        if (Input.GetButtonDown("Fire2"))
         {
             m_Client.AttackCheck(1);
+        }
+
+        if (Input.GetButtonUp("Fire2"))
+        {
+            m_Client.RPC("AttackUp", Photon.Pun.RpcTarget.AllBufferedViaServer, 1, m_Client.m_Cam.ShotDirection);
+        }
+
+        if (Input.GetButton("Fire1"))
+        {
+            m_Client.RPC("Attacking", Photon.Pun.RpcTarget.AllBufferedViaServer, 0, m_Client.m_Cam.ShotDirection);
+        }
+
+        if (Input.GetButton("Fire2"))
+        {
+            m_Client.RPC("Attacking", Photon.Pun.RpcTarget.AllBufferedViaServer, 1, m_Client.m_Cam.ShotDirection);
         }
 
         if (Input.GetButtonDown("Fire3"))

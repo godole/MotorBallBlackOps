@@ -16,10 +16,21 @@ public class Weapon : MonoBehaviour
     {
         return IsAttackEnable;
     }
-    public virtual void Attack(Vector3 dir)
+    public virtual void AttackUp(Vector3 dir)
     {
 
     }
+
+    public virtual void AttackDown(Vector3 dir)
+    {
+
+    }
+
+    public virtual void Attacking(Vector3 dir)
+    {
+
+    }
+
     public virtual void Reload()
     {
 

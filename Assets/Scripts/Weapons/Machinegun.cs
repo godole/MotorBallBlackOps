@@ -2,34 +2,43 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Gun : Weapon
+public class Machinegun : Weapon
 {
     public GameObject m_Bullet;
-    
+
     public int m_MaxBulletCapacity;
     public int m_CurBulletCapacity;
     public float m_ShotDelay;
 
     GameSceneManager m_GameManager;
+    float m_CurShotDelay = 0.0f;
 
     public override bool AttackCheck()
     {
-        return m_CurBulletCapacity > 0 && IsAttackEnable;
+        return true;
     }
 
     public override void AttackDown(Vector3 dir)
     {
-        m_CurBulletCapacity--;
-        IsAttackEnable = false;
-
-        CreateBullet(dir);
-
-        Character.PlayAnimation("Shooting", "Shooting");
+        
     }
 
-    public override void StartDelay()
+    public override void Attacking(Vector3 dir)
     {
-        StartCoroutine(ShotDelay());
+        if (m_CurBulletCapacity < 1)
+            return;
+
+        m_CurShotDelay += Time.deltaTime;
+
+        if(m_CurShotDelay > m_ShotDelay)
+        {
+            m_CurShotDelay = 0.0f;
+            m_CurBulletCapacity--;
+
+            CreateBullet(dir);
+
+            Character.PlayAnimation("Shooting", "Shooting");
+        }
     }
 
     public override void Reload()

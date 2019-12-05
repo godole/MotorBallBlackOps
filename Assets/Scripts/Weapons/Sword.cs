@@ -13,36 +13,36 @@ public class Sword : Weapon
     public float m_AttackHeight;
     public float m_AttackPower;
 
-    public override void Attack(Vector3 dir)
+    public override void AttackDown(Vector3 dir)
     {
-        if (IsAttackEnable)
+        Character.PlayAnimation("Melee Attack", "Melee Attack");
+
+        IsAttackEnable = false;
+
+        if (!Character.photonView.IsMine)
+            return;
+
+        //var hit = Physics.OverlapSphere(transform.position, m_AttackRange, 1 << 11);
+        Vector3 center = transform.position + dir * m_AttackHeight / 2;
+        Vector3 size = new Vector3(m_AttackWidth, 1.0f, m_AttackHeight);
+        Quaternion rot = Quaternion.LookRotation(dir, Vector3.up);
+        var hit = Physics.OverlapBox(
+            center,
+            size / 2,
+            rot, 1 << 11);
+
+        GameObject.Find("DebugDraw").GetComponent<DebugDraw>().DrawBox(center, size, rot);
+
+        foreach (var h in hit)
         {
-            Character.PlayAnimation("Melee Attack", "Melee Attack");
-
-            IsAttackEnable = false;
-
-            //var hit = Physics.OverlapSphere(transform.position, m_AttackRange, 1 << 11);
-            Vector3 center = transform.position + dir * m_AttackHeight / 2;
-            Vector3 size = new Vector3(m_AttackWidth, 1.0f, m_AttackHeight);
-            Quaternion rot = Quaternion.LookRotation(dir, Vector3.up);
-            var hit = Physics.OverlapBox(
-                center,
-                size / 2, 
-                rot, 1 << 11);
-
-            GameObject.Find("DebugDraw").GetComponent<DebugDraw>().DrawBox(center, size, rot);
-
-            foreach (var h in hit)
+            var character = h.GetComponent<CharacterBase>();
+            if (character.m_TeamNumber != Character.m_TeamNumber)
             {
-                var character = h.GetComponent<CharacterBase>();
-                if (character.m_TeamNumber != Character.m_TeamNumber)
-                {
-                    Vector3 enemyPos = h.gameObject.transform.position;
-                    Vector3 deltaPos = enemyPos - transform.position;
-                    deltaPos.Normalize();
-                    deltaPos *= m_AttackPower;
-                    character.RPC("Hit", RpcTarget.AllBufferedViaServer, deltaPos, m_AttackDamage);
-                }
+                Vector3 enemyPos = h.gameObject.transform.position;
+                Vector3 deltaPos = enemyPos - transform.position;
+                deltaPos.Normalize();
+                deltaPos *= m_AttackPower;
+                character.RPC("Hit", RpcTarget.AllBufferedViaServer, deltaPos, m_AttackDamage);
             }
         }
     }
