@@ -43,8 +43,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55cc16e93ed30e54daec34201ddde6e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Bullet: {fileID: 9169712586877461207, guid: 88b7a051624972c46876cebeb8aa24b6,
+  m_Bullet: {fileID: 9169712586877461207, guid: 3355135e23afeca498c2041616b096ef,
     type: 3}
-  m_MaxBulletCapacity: 30
-  m_CurBulletCapacity: 30
-  m_ShotDelay: 0.1
+  m_MaxBulletCapacity: 80
+  m_CurBulletCapacity: 80
+  m_ShotDelay: 0.3
