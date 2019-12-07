@@ -94,10 +94,10 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
         SetCreatePosition(m_StartPosition[m_LocalID - 1]);
         var character = CreatePlayer(m_StartPosition[m_LocalID - 1]).GetComponent<CharacterBase>();
 
-        SetLeftWeaponType("Gun");
-        SetRightWeaponType("Hammer");
-        character.GetComponent<CharacterBase>().RPC("ChangeWeapon", RpcTarget.AllBufferedViaServer, "Gun", 1);
-        character.GetComponent<CharacterBase>().RPC("ChangeWeapon", RpcTarget.AllBufferedViaServer, "Hammer", 0);
+        SetLeftWeaponType("Machinegun");
+        SetRightWeaponType("Sword");
+        character.GetComponent<CharacterBase>().RPC("ChangeWeapon", RpcTarget.AllBufferedViaServer, "Machinegun", 1);
+        character.GetComponent<CharacterBase>().RPC("ChangeWeapon", RpcTarget.AllBufferedViaServer, "Sword", 0);
     }
 
     public void SetLeftWeaponType(string x)
