@@ -9,8 +9,18 @@ public class Weapon : MonoBehaviour
     CharacterBase m_Character;
     
     public bool IsAttackEnable { get => m_IsAttackEnable; set => m_IsAttackEnable = value; }
+    public int SlotIndex { get => m_SlotIndex; set => m_SlotIndex = value; }
+    public float BatteryReduce { get => m_BatteryReduce; set => m_BatteryReduce = value; }
 
     bool m_IsAttackEnable = true;
+
+    int m_SlotIndex;
+    [SerializeField] float m_BatteryReduce;
+
+    public virtual void OnStart()
+    {
+
+    }
 
     public virtual bool AttackCheck()
     {

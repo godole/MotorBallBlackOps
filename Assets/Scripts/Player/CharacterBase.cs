@@ -2,6 +2,7 @@
 using Photon.Pun.UtilityScripts;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
@@ -20,12 +21,22 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     bool m_HasBall = false;
     bool m_IsHitBullet = false;
     bool m_IsThrowing = false;
+    [SerializeField] float m_DashMaxCount;
+    float m_DashCount;
+
+    Slider m_HealthSlider;
     [SerializeField]
     int m_PlayerID = -1;
 
     [SerializeField]
     float m_ThrowPower = 0;
     float m_throwChargningPower = 0.0f;
+
+    [SerializeField] float m_MaxBatteryCapacity;
+    [SerializeField] float m_BatteryReduce;
+    [SerializeField] float m_DashBatteryReduce;
+    [SerializeField] float m_OverdriveBatteryReduce;
+    float m_CurBatteryCapacity;
 
     public CustomFreeLookCam m_Cam;
 
@@ -47,6 +58,9 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     public bool IsThrowing { get => m_IsThrowing; set => m_IsThrowing = value; }
     public float ThrowChargningPower { get => m_throwChargningPower; set => m_throwChargningPower = value; }
     public bool IsInPitstop { get => m_IsInPitstop; set => m_IsInPitstop = value; }
+    public float DashMaxCount { get => m_DashMaxCount; set => m_DashMaxCount = value; }
+    public float OverdriveBatteryReduce { get => m_OverdriveBatteryReduce; set => m_OverdriveBatteryReduce = value; }
+    public float CurBatteryCapacity { get => m_CurBatteryCapacity; set => m_CurBatteryCapacity = value; }
 
     public int m_MaxHP;
     int m_CurrentHP;
@@ -62,6 +76,12 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField]
     Material m_CharacterBlueMaterial;
 
+    [SerializeField] TextMeshPro m_PlayerNameText;
+    [SerializeField] GameObject m_HealthSliderPrefab;
+    [SerializeField] Vector3 m_HealthSliderDeltaPos;
+
+    [SerializeField] Transform[] m_HandTransform;
+
 
     public Weapon[] m_Weapons;
 
@@ -72,6 +92,7 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
         m_RigidBody = GetComponent<Rigidbody>();
 
         CurrentHP = m_MaxHP;
+        CurBatteryCapacity = m_MaxBatteryCapacity;
 
         if (photonView.IsMine)
         {
@@ -102,19 +123,53 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
         {
             weapon.Character = this;
         }
+
+        m_DashCount = m_DashMaxCount;
+
+        if(!photonView.IsMine)
+        {
+            m_PlayerNameText.text = photonView.Owner.NickName;
+
+            m_HealthSlider = Instantiate(m_HealthSliderPrefab).GetComponent<Slider>();
+            m_HealthSlider.transform.parent = UIController.getInstance.PlayPanel.transform;
+            m_HealthSlider.transform.SetAsFirstSibling();
+        }
+        else
+        {
+            Destroy(m_PlayerNameText.gameObject);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
         m_Ball.SetActive(m_HasBall);
+        CurBatteryCapacity -= m_BatteryReduce * Time.deltaTime;
 
-        GameSceneManager.getInstance.m_HPUI[m_PlayerID - 1].value = CurrentHP / (float)m_MaxHP;
+        if(!photonView.IsMine)
+        {
+            m_HealthSlider.transform.position = Camera.main.WorldToScreenPoint(transform.position) + m_HealthSliderDeltaPos;
+            m_HealthSlider.value = CurrentHP / (float)m_MaxHP;
+        }
+        else
+        {
+            UIController.getInstance.PlayPanel.SetHealthValue(CurrentHP / (float)m_MaxHP);
+            UIController.getInstance.PlayPanel.SetBatteryValue(CurBatteryCapacity / m_MaxBatteryCapacity);
+        }
+
+        UIController.getInstance.PlayPanel.SetDash((int)m_DashCount);
+
+        if (m_DashCount < m_DashMaxCount)
+        {
+            m_DashCount += Time.deltaTime;
+            if (m_DashCount >= m_DashMaxCount)
+                m_DashCount = m_DashMaxCount;
+        }
 
         if (transform.position.y < -50.0f)
             m_CurrentHP = 0;
 
-        if (m_CurrentHP <= 0)
+        if (m_CurrentHP <= 0 || CurBatteryCapacity <= 0)
         {
             if (HasBall && photonView.IsMine)
                 PhotonNetwork.Instantiate("Ball", transform.position, new Quaternion(), 0);
@@ -122,6 +177,7 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
             Instantiate(m_DestroyEff, transform.position, Quaternion.identity);
 
             PhotonNetwork.Destroy(gameObject);
+            
         }
 
         if (m_PlayerID % 2 == 1)
@@ -158,7 +214,10 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     private void OnDestroy()
     {
         if (!photonView.IsMine)
+        {
+            Destroy(m_HealthSlider.gameObject);
             return;
+        }
 
         m_Cam.SetTarget(null);
 
@@ -188,6 +247,7 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
         IsInPitstop = true;
 
         m_CurrentHP = m_MaxHP;
+        CurBatteryCapacity = m_MaxBatteryCapacity;
 
         gameObject.GetComponent<MachineBase>().ResetVelocity();
 
@@ -249,10 +309,12 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     {
         Destroy(m_Weapons[index].gameObject);
         var w = GameSceneManager.getInstance.CreateWeapon(name);
-        w.transform.parent = transform;
+        w.transform.parent = m_HandTransform[index];
         w.transform.localPosition = Vector3.zero;
         m_Weapons[index] = w.GetComponent<Weapon>();
         m_Weapons[index].Character = this;
+        m_Weapons[index].SlotIndex = index;
+        m_Weapons[index].OnStart();
     }
 
     public void TakeOffBall()
@@ -311,10 +373,16 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
             }
 
             if(t != null)
+            {
                 m_Cam.LockOn(t.transform);
+                UIController.getInstance.PlayPanel.SetLockOn(true);
+            }
         }
         else
+        {
             m_Cam.UnLock();
+            UIController.getInstance.PlayPanel.SetLockOn(false);
+        }
     }
 
     public void ThrowStart()
@@ -356,6 +424,13 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
 
     public void Boost(Vector2 dir)
     {
+        if (m_DashCount < 1.0f)
+            return;
+
+        m_DashCount -= 1.0f;
+        CurBatteryCapacity -= m_DashBatteryReduce;
+
+        bool isForward = false;
         Vector3 tempDir = Vector3.zero;
         Transform tempTransform = null;
         if (m_Cam.IsLockOn)
@@ -372,20 +447,20 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
         }
 
         if (dir.x > 0.0f)
-            tempDir += m_Cam.gameObject.transform.right;
+            tempDir += tempTransform.right;
 
         if (dir.x < 0.0f)
-            tempDir -= m_Cam.gameObject.transform.right;
+            tempDir -= tempTransform.right;
 
         if (dir.y > 0.0f)
-            tempDir += m_Cam.gameObject.transform.forward;
+            tempDir += tempTransform.forward;
 
         if (dir.y < 0.0f)
-            tempDir -= m_Cam.gameObject.transform.forward;
+            tempDir -= tempTransform.forward;
 
         tempDir.Normalize();
 
-        gameObject.GetComponent<MachineBase>().Boost(tempDir);
+        gameObject.GetComponent<MachineBase>().Boost(tempDir, isForward);
     }
 
     public void PlayAnimation(string name, string layerName)
