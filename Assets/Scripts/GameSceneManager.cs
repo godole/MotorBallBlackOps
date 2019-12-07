@@ -21,15 +21,6 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
     public Transform m_BallStartPosition;
     public CustomFreeLookCam m_Cam;
 
-    public Text[] m_PlayerName;
-    public Text m_RedScore;
-    public Text m_BlueScore;
-    public Text m_CurrentVelocity;
-    public Slider[] m_HPUI;
-
-    public Text m_MaxBulletCapacity;
-    public Text m_CurBulletCapacity;
-
     public static string BALL_OWNER_CHANGE = "BallOwnerChange";
     public static string CREATE_POSITION = "CreatePosition";
     public static string CREATE_ROTATION = "CreateRotation";
@@ -45,11 +36,14 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
     Transform m_CreatePosition;
 
     GameObject m_Player;
+    bool m_IsSelectPitout = false;
     
     string m_SelectedLeftWeaponName;
     string m_SelectedRightWeaponName;
 
     [SerializeField] GameObject[] m_Weapons;
+    [SerializeField] Camera m_MinimapCamera;
+    [SerializeField] Pitstop[] m_Pitstop;
 
     public Transform CreatePosition { get => m_CreatePosition; set => m_CreatePosition = value; }
     public static GameSceneManager getInstance
@@ -98,7 +92,12 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
         }
 
         SetCreatePosition(m_StartPosition[m_LocalID - 1]);
-        CreatePlayer(m_StartPosition[m_LocalID - 1]);
+        var character = CreatePlayer(m_StartPosition[m_LocalID - 1]).GetComponent<CharacterBase>();
+
+        SetLeftWeaponType("Gun");
+        SetRightWeaponType("Hammer");
+        character.GetComponent<CharacterBase>().RPC("ChangeWeapon", RpcTarget.AllBufferedViaServer, "Gun", 1);
+        character.GetComponent<CharacterBase>().RPC("ChangeWeapon", RpcTarget.AllBufferedViaServer, "Hammer", 0);
     }
 
     public void SetLeftWeaponType(string x)
@@ -111,52 +110,83 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
         m_SelectedRightWeaponName = x;
     }
 
-    public void ExitPitstop()
+    public void ExitPitstop(Vector3 pos, Quaternion rot)
     {
         var props = PhotonNetwork.CurrentRoom.CustomProperties;
-        Vector3 exitPos = Vector3.zero;
-        Quaternion exitRot = Quaternion.identity;
-
-        if (props.ContainsKey(GameSceneManager.CREATE_POSITION))
-        {
-            exitPos = (Vector3)props[GameSceneManager.CREATE_POSITION];
-        }
-
-        if (props.ContainsKey(GameSceneManager.CREATE_ROTATION))
-        {
-            exitRot = (Quaternion)props[GameSceneManager.CREATE_ROTATION];
-        }
 
         var character = Player.GetComponent<CharacterBase>();
         character.RPC("ChangeWeapon", RpcTarget.AllBufferedViaServer, m_SelectedLeftWeaponName, 0);
         character.RPC("ChangeWeapon", RpcTarget.AllBufferedViaServer, m_SelectedRightWeaponName, 1);
         m_Cam.gameObject.GetComponent<CameraController>().SetFreeLockCameraActive(true);
-        character.ExitPitstop(exitPos, exitRot);
+        character.ExitPitstop(pos, rot);
     }
 
     // Update is called once per frame
     void Update()
     {
-        int i = 0;
-        foreach (var player in PhotonNetwork.PlayerList)
+        if (m_IsSelectPitout)
+            SelectPitoutUpdate();
+
+        else
         {
-            m_PlayerName[i].text = player.NickName;
-            ++i;
+            var props = PhotonNetwork.CurrentRoom.CustomProperties;
+
+            if (props.ContainsKey(RED_TEAM.ToString()))
+            {
+                int score = (int)props[RED_TEAM.ToString()];
+                UIController.getInstance.PlayPanel.SetRedTeamScore(score);
+            }
+
+            if (props.ContainsKey(BLUE_TEAM.ToString()))
+            {
+                int score = (int)props[BLUE_TEAM.ToString()];
+                UIController.getInstance.PlayPanel.SetBlueTeamScore(score);
+            }
+        }
+    }
+
+    void SelectPitoutUpdate()
+    {
+        Pitstop temp = null;
+
+        foreach (var item in m_Pitstop)
+        {
+            Vector2 scrmousePos = Input.mousePosition;
+            Vector2 scrPos = UIController.getInstance.GetMinimapPosition(item.PitoutPoint.position);
+            if (Vector2.Distance(scrPos, scrmousePos) < 100)
+            {
+                temp = item;
+                temp.MinimapIcon.SetActive(true);
+            }
+            else
+                item.MinimapIcon.SetActive(false);
         }
 
-        var props = PhotonNetwork.CurrentRoom.CustomProperties;
-
-        if (props.ContainsKey(RED_TEAM.ToString()))
+        if(Input.GetMouseButtonDown(0) && temp != null)
         {
-            int score = (int)props[RED_TEAM.ToString()];
-            m_RedScore.text = score.ToString();
-        }
+            m_IsSelectPitout = false;
+            UIController.getInstance.Pitout();
+            temp.MinimapIcon.SetActive(false);
 
-        if (props.ContainsKey(BLUE_TEAM.ToString()))
-        {
-            int score = (int)props[BLUE_TEAM.ToString()];
-            m_BlueScore.text = score.ToString();
+            if (Player != null)
+            {
+                ExitPitstop(temp.PitoutPoint.position, temp.PitoutPoint.rotation);
+            }
+            else
+            {
+                var c = CreatePlayer(temp.PitoutPoint).GetComponent<CharacterBase>();
+                c.RPC("ChangeWeapon", RpcTarget.AllBufferedViaServer, m_SelectedLeftWeaponName, 0);
+                c.RPC("ChangeWeapon", RpcTarget.AllBufferedViaServer, m_SelectedRightWeaponName, 1);
+                m_Cam.gameObject.GetComponent<CameraController>().SetFreeLockCameraActive(true);
+            }
         }
+    }
+
+    public void SelectPitoutState()
+    {
+        m_IsSelectPitout = true;
+        m_Cam.gameObject.GetComponent<CameraController>().SetFreeLockCameraActive(false);
+        UIController.getInstance.SelectPitout();
     }
 
     GameObject CreatePlayer(Transform pos)
@@ -173,16 +203,8 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
 
     public void RevivePlayer()
     {
-        Hashtable props = PhotonNetwork.CurrentRoom.CustomProperties;
-        m_CreatePosition.position = (Vector3)props[CREATE_POSITION];
-        m_CreatePosition.rotation = (Quaternion)props[CREATE_ROTATION];
-        StartCoroutine(CreatePlayerDelay());
-    }
-
-    IEnumerator CreatePlayerDelay()
-    {
-        yield return new WaitForSeconds(m_PlayerRespawnTime);
-        CreatePlayer(m_CreatePosition);
+        UIController.getInstance.PlayPanel.gameObject.SetActive(false);
+        SelectPitoutState();
     }
 
     public void SetCreatePosition(Transform pos)

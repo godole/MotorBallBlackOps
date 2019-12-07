@@ -27,12 +27,17 @@ public class Hammer : Weapon
         
     }
 
+    public override void OnStart()
+    {
+        UIController.getInstance.PlayPanel.WeaponInfo[SlotIndex].SetWeaponType(UIWeaponInfo.WEAPONTYPE_MELEE);
+    }
+
     public override void AttackDown(Vector3 dir)
     {
         if (!Character.photonView.IsMine)
             return;
 
-        UIController.getInstance.PlayPanel.ThrowGageSlider.gameObject.SetActive(true);
+        UIController.getInstance.PlayPanel.WeaponInfo[SlotIndex].ChargeSlider.gameObject.SetActive(true);
     }
 
     public override void AttackUp(Vector3 dir)
@@ -45,9 +50,12 @@ public class Hammer : Weapon
         if (!Character.photonView.IsMine)
             return;
 
+        Character.CurBatteryCapacity -= BatteryReduce;
+
         IsAttackEnable = false;
 
-        UIController.getInstance.PlayPanel.ThrowGageSlider.gameObject.SetActive(false);
+        UIController.getInstance.PlayPanel.WeaponInfo[SlotIndex].MeleeNotReady();
+        UIController.getInstance.PlayPanel.WeaponInfo[SlotIndex].ChargeSlider.gameObject.SetActive(false);
 
         var rb = Character.GetComponent<Rigidbody>();
         rb.velocity = Vector3.zero;
@@ -97,12 +105,13 @@ public class Hammer : Weapon
         if (m_AttackPower > m_AttackMaxPower)
             m_AttackPower = m_AttackMaxPower;
 
-        UIController.getInstance.PlayPanel.ThrowGageSlider.value = m_AttackDamage / m_AttackMaxDamage;
+        UIController.getInstance.PlayPanel.WeaponInfo[SlotIndex].ChargeSlider.value = m_AttackDamage / m_AttackMaxDamage;
     }
 
     IEnumerator AttackDelay()
     {
         yield return new WaitForSeconds(m_AttackDelay);
         IsAttackEnable = true;
+        UIController.getInstance.PlayPanel.WeaponInfo[SlotIndex].MeleeReady();
     }
 }

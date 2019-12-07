@@ -45,7 +45,6 @@ public class Gate : MonoBehaviourPunCallbacks
 
             if (character.HasBall)
             {
-                GameSceneManager.getInstance.SetCreatePosition(m_RevivePosition);
                 object score;
                 if (!PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(character.m_TeamNumber.ToString(), out score))
                 {
@@ -78,7 +77,7 @@ public class Gate : MonoBehaviourPunCallbacks
 
         if(props.ContainsKey(ACTIVE_GATE))
         {
-            if ((int)props[ACTIVE_GATE] + 1 == ID || ((int)props[ACTIVE_GATE] == 7 && ID == 1))
+            if ((int)props[ACTIVE_GATE] + 1 == ID || ((int)props[ACTIVE_GATE] == 2 && ID == 1))
             {
                 IsActive = true;
             }

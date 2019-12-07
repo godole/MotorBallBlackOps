@@ -104,6 +104,11 @@ public class MachineBase : MonoBehaviour
         {
             SetFinalPower(m_BoostMaxSpeed, v);
             m_CurMaxSpeed = curSpeed;
+
+            if(curSpeed >= m_NormalMaxSpeed)
+            {
+                m_CharacterBase.CurBatteryCapacity -= m_CharacterBase.OverdriveBatteryReduce * Time.deltaTime;
+            }
         }
         else if (v < -0.1f)
         {
@@ -134,23 +139,11 @@ public class MachineBase : MonoBehaviour
         m_CurMaxSpeed = 0.0f;
     }
 
-    public void Boost(Vector3 dir)
+    public void Boost(Vector3 dir, bool isForward)
     {
-        if (!m_IsBoostEnable)
-            return;
-
-        //m_tempVelocity = m_Rigidbody.velocity;
+        Vector3 tempVelocity = m_Rigidbody.velocity;
         m_Rigidbody.velocity = Vector3.zero;
-        m_Rigidbody.AddForce(dir * m_DashPower, ForceMode.Impulse);
-        StartCoroutine(StopBoost());
-    }
-
-    IEnumerator StopBoost()
-    {
-        m_IsBoostEnable = false;
-        yield return new WaitForSeconds(m_DashTime);
-        m_IsBoostEnable = true;
-        //m_Rigidbody.velocity = m_tempVelocity;
+        m_Rigidbody.AddForce(dir * m_DashPower * (isForward ? 2.0f : 1.0f), ForceMode.Impulse);
     }
 
     void UniformVelocity(float targetVel, float accel)

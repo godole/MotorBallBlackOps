@@ -12,6 +12,16 @@ public class Shotgun : Weapon
     public float m_ShotAngle;
     public int m_Damage;
 
+    private void Start()
+    {
+        IsAttackEnable = true;
+    }
+
+    public override void OnStart()
+    {
+        UIController.getInstance.PlayPanel.WeaponInfo[SlotIndex].SetWeaponType(UIWeaponInfo.WEAPONTYPE_RANGE);
+    }
+
     public override bool AttackCheck()
     {
         return m_CurBulletCapacity > 0 && IsAttackEnable;
@@ -23,6 +33,7 @@ public class Shotgun : Weapon
             return;
 
         m_CurBulletCapacity--;
+        Character.CurBatteryCapacity -= BatteryReduce;
         IsAttackEnable = false;
 
         var cols = Physics.OverlapSphere(Character.transform.position, m_Range, 1 << 11);
@@ -59,7 +70,6 @@ public class Shotgun : Weapon
 
     public override void SetWeaponUI()
     {
-        GameSceneManager.getInstance.m_MaxBulletCapacity.text = m_MaxBulletCapacity.ToString();
-        GameSceneManager.getInstance.m_CurBulletCapacity.text = m_CurBulletCapacity.ToString();
+        UIController.getInstance.PlayPanel.WeaponInfo[SlotIndex].CapacityText.text = m_CurBulletCapacity.ToString() + "/" + m_MaxBulletCapacity.ToString();
     }
 }

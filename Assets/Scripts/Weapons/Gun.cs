@@ -10,7 +10,10 @@ public class Gun : Weapon
     public int m_CurBulletCapacity;
     public float m_ShotDelay;
 
-    GameSceneManager m_GameManager;
+    public override void OnStart()
+    {
+        UIController.getInstance.PlayPanel.WeaponInfo[SlotIndex].SetWeaponType(UIWeaponInfo.WEAPONTYPE_RANGE);
+    }
 
     public override bool AttackCheck()
     {
@@ -20,6 +23,7 @@ public class Gun : Weapon
     public override void AttackDown(Vector3 dir)
     {
         m_CurBulletCapacity--;
+        Character.CurBatteryCapacity -= BatteryReduce;
         IsAttackEnable = false;
 
         CreateBullet(dir);
@@ -51,8 +55,8 @@ public class Gun : Weapon
     // Start is called before the first frame update
     void Start()
     {
+        IsAttackEnable = true;
         m_CurBulletCapacity = m_MaxBulletCapacity;
-        m_GameManager = GameObject.Find("GameSceneManager").GetComponent<GameSceneManager>();
     }
 
     // Update is called once per frame
@@ -70,7 +74,6 @@ public class Gun : Weapon
 
     public void UIUpdate()
     {
-        m_GameManager.m_MaxBulletCapacity.text = m_MaxBulletCapacity.ToString();
-        m_GameManager.m_CurBulletCapacity.text = m_CurBulletCapacity.ToString();
+        UIController.getInstance.PlayPanel.WeaponInfo[SlotIndex].CapacityText.text = m_CurBulletCapacity.ToString() + "/" + m_MaxBulletCapacity.ToString();
     }
 }

@@ -5,6 +5,12 @@ using UnityEngine;
 
 public class Pitstop : MonoBehaviour
 {
+    [SerializeField] Transform m_PitoutPoint;
+    [SerializeField] GameObject m_MinimapIcon;
+
+    public Transform PitoutPoint { get => m_PitoutPoint; set => m_PitoutPoint = value; }
+    public GameObject MinimapIcon { get => m_MinimapIcon; set => m_MinimapIcon = value; }
+
     private void Start()
     {
     }

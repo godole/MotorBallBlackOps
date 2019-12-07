@@ -11,6 +11,11 @@ public class Sword : Weapon
     public float m_AttackHeight;
     public float m_AttackPower;
 
+    public override void OnStart()
+    {
+        UIController.getInstance.PlayPanel.WeaponInfo[SlotIndex].SetWeaponType(UIWeaponInfo.WEAPONTYPE_MELEE);
+    }
+
     public override void AttackDown(Vector3 dir)
     {
         Character.PlayAnimation("Melee Attack", "Melee Attack");
@@ -19,6 +24,10 @@ public class Sword : Weapon
 
         if (!Character.photonView.IsMine)
             return;
+
+        Character.CurBatteryCapacity -= BatteryReduce;
+
+        UIController.getInstance.PlayPanel.WeaponInfo[SlotIndex].MeleeNotReady();
 
         //var hit = Physics.OverlapSphere(transform.position, m_AttackRange, 1 << 11);
         Vector3 center = transform.position + dir * m_AttackHeight / 2;
@@ -54,6 +63,7 @@ public class Sword : Weapon
     {
         yield return new WaitForSeconds(m_AttackDelay);
         IsAttackEnable = true;
+        UIController.getInstance.PlayPanel.WeaponInfo[SlotIndex].MeleeReady();
     }
 
     // Start is called before the first frame update
