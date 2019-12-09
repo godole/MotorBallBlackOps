@@ -24,7 +24,6 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] float m_DashMaxCount;
     float m_DashCount;
 
-    Slider m_HealthSlider;
     [SerializeField]
     int m_PlayerID = -1;
 
@@ -41,6 +40,8 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     public CustomFreeLookCam m_Cam;
 
     public GameObject m_CharacterMesh;
+    [SerializeField] SkinnedMeshRenderer[] m_ColorMesh;
+    [SerializeField] MeshRenderer m_IconMesh;
 
     public GameObject m_DestroyEff;
 
@@ -76,9 +77,10 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField]
     Material m_CharacterBlueMaterial;
 
+    [SerializeField] Material m_BallEatIconMaterial;
+    [SerializeField] Material m_PlayerIconMaterial;
+
     [SerializeField] TextMeshPro m_PlayerNameText;
-    [SerializeField] GameObject m_HealthSliderPrefab;
-    [SerializeField] Vector3 m_HealthSliderDeltaPos;
 
     [SerializeField] Transform[] m_HandTransform;
 
@@ -121,7 +123,8 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
 
         foreach (var weapon in m_Weapons)
         {
-            weapon.Character = this;
+            if(weapon != null)
+                weapon.Character = this;
         }
 
         m_DashCount = m_DashMaxCount;
@@ -129,10 +132,6 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
         if(!photonView.IsMine)
         {
             m_PlayerNameText.text = photonView.Owner.NickName;
-
-            m_HealthSlider = Instantiate(m_HealthSliderPrefab).GetComponent<Slider>();
-            m_HealthSlider.transform.parent = UIController.getInstance.PlayPanel.transform;
-            m_HealthSlider.transform.SetAsFirstSibling();
         }
         else
         {
@@ -146,18 +145,6 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
         m_Ball.SetActive(m_HasBall);
         CurBatteryCapacity -= m_BatteryReduce * Time.deltaTime;
 
-        if(!photonView.IsMine)
-        {
-            m_HealthSlider.transform.position = Camera.main.WorldToScreenPoint(transform.position) + m_HealthSliderDeltaPos;
-            m_HealthSlider.value = CurrentHP / (float)m_MaxHP;
-        }
-        else
-        {
-            UIController.getInstance.PlayPanel.SetHealthValue(CurrentHP / (float)m_MaxHP);
-            UIController.getInstance.PlayPanel.SetBatteryValue(CurBatteryCapacity / m_MaxBatteryCapacity);
-        }
-
-        UIController.getInstance.PlayPanel.SetDash((int)m_DashCount);
 
         if (m_DashCount < m_DashMaxCount)
         {
@@ -174,30 +161,30 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
             if (HasBall && photonView.IsMine)
                 PhotonNetwork.Instantiate("Ball", transform.position, new Quaternion(), 0);
 
-            Instantiate(m_DestroyEff, transform.position, Quaternion.identity);
+            
 
             PhotonNetwork.Destroy(gameObject);
             
         }
 
-        if (m_PlayerID % 2 == 1)
+
+        Material tempMaterial = m_PlayerID % 2 == 1 ? m_CharacterRedMaterial : m_CharacterBlueMaterial;
+        m_TeamNumber = m_PlayerID % 2 == 1 ? GameSceneManager.RED_TEAM : GameSceneManager.BLUE_TEAM;
+        foreach (var mesh in m_ColorMesh)
         {
-            m_TeamNumber = GameSceneManager.RED_TEAM;
-            m_CharacterMesh.GetComponentInChildren<SkinnedMeshRenderer>().material = m_CharacterRedMaterial;
+            mesh.material = tempMaterial;
         }
-        else
+
+        if (HasBall)
         {
-            m_TeamNumber = GameSceneManager.BLUE_TEAM;
-            m_CharacterMesh.GetComponentInChildren<SkinnedMeshRenderer>().material = m_CharacterBlueMaterial;
+            tempMaterial = m_BallEatIconMaterial;
         }
 
         if (photonView.IsMine)
-        {
-            foreach (var weapon in m_Weapons)
-            {
-                weapon.SetWeaponUI();
-            }
-        }
+            tempMaterial = m_PlayerIconMaterial;
+
+        m_IconMesh.material = tempMaterial;
+
 
         if (m_IsThrowing)
         {
@@ -206,16 +193,29 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
             if (m_throwChargningPower > m_ThrowPower)
                 m_throwChargningPower = m_ThrowPower;
 
-            UIController.getInstance.PlayPanel.ThrowGageSlider.value = m_throwChargningPower / m_ThrowPower;
+            if (photonView.IsMine)
+                UIController.getInstance.PlayPanel.ThrowGageSlider.value = m_throwChargningPower / m_ThrowPower;
         }
 
+        if (photonView.IsMine)
+        {
+            UIController.getInstance.PlayPanel.SetHealthValue(CurrentHP / (float)m_MaxHP);
+            UIController.getInstance.PlayPanel.SetBatteryValue(CurBatteryCapacity / m_MaxBatteryCapacity);
+            UIController.getInstance.PlayPanel.SetDash((int)m_DashCount);
+
+            foreach (var weapon in m_Weapons)
+            {
+                weapon.SetWeaponUI();
+            }
+        }
     }
 
     private void OnDestroy()
     {
+        Instantiate(m_DestroyEff, transform.position, Quaternion.identity);
+
         if (!photonView.IsMine)
         {
-            Destroy(m_HealthSlider.gameObject);
             return;
         }
 
@@ -250,8 +250,6 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
         CurBatteryCapacity = m_MaxBatteryCapacity;
 
         gameObject.GetComponent<MachineBase>().ResetVelocity();
-
-        var renderer = GetComponentInChildren<Renderer>();
 
         SetVisible(false);
 
@@ -307,10 +305,13 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     void ChangeWeapon(string name, int index)
     {
-        Destroy(m_Weapons[index].gameObject);
+        if(m_Weapons[index] != null)
+            Destroy(m_Weapons[index].gameObject);
+
         var w = GameSceneManager.getInstance.CreateWeapon(name);
         w.transform.parent = m_HandTransform[index];
         w.transform.localPosition = Vector3.zero;
+        w.transform.localRotation = Quaternion.identity;
         m_Weapons[index] = w.GetComponent<Weapon>();
         m_Weapons[index].Character = this;
         m_Weapons[index].SlotIndex = index;
@@ -375,13 +376,12 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
             if(t != null)
             {
                 m_Cam.LockOn(t.transform);
-                UIController.getInstance.PlayPanel.SetLockOn(true);
+                
             }
         }
         else
         {
             m_Cam.UnLock();
-            UIController.getInstance.PlayPanel.SetLockOn(false);
         }
     }
 

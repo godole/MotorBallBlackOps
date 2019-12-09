@@ -19,7 +19,8 @@ public class Shotgun : Weapon
 
     public override void OnStart()
     {
-        UIController.getInstance.PlayPanel.WeaponInfo[SlotIndex].SetWeaponType(UIWeaponInfo.WEAPONTYPE_RANGE);
+        if (Character.photonView.IsMine)
+            UIController.getInstance.PlayPanel.WeaponInfo[SlotIndex].SetWeaponType(UIWeaponInfo.WEAPONTYPE_RANGE);
     }
 
     public override bool AttackCheck()

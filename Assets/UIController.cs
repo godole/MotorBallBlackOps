@@ -23,6 +23,7 @@ public class UIController : MonoBehaviour
     
     [SerializeField] PlayPanel m_PlayPanel;
     [SerializeField] PitstopPanel m_PitstopPanel;
+    [SerializeField] GameObject m_SelectPitoutPanel;
     [SerializeField] RectTransform m_MinimapBackground;
     [SerializeField] RectTransform m_MinimapTrack;
     [SerializeField] Vector2 m_SelectPitoutSize;
@@ -46,6 +47,7 @@ public class UIController : MonoBehaviour
 
     public void SelectPitout()
     {
+        m_SelectPitoutPanel.SetActive(true);
         m_MinimapBackground.localPosition = Vector3.zero;
         m_MinimapTrack.localPosition = Vector3.zero;
         
@@ -61,16 +63,8 @@ public class UIController : MonoBehaviour
         m_MinimapBackground.sizeDelta = m_MinimapStartSize;
         m_MinimapTrack.sizeDelta = m_MinimapStartSize;
         PlayPanel.gameObject.SetActive(true);
-    }
-
-    public Vector2 GetMinimapPosition(Vector3 objPoistion)
-    {
-        Vector2 scrPos = m_MinimapCamera.WorldToViewportPoint(objPoistion);
-        scrPos.x *= Camera.main.pixelRect.width;
-        scrPos.y *= Camera.main.pixelRect.height;
-
-        //Debug.Log(scrPos);
-
-        return scrPos;
+        m_SelectPitoutPanel.SetActive(false);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = false;
     }
 }

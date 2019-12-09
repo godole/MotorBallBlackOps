@@ -29,7 +29,8 @@ public class Hammer : Weapon
 
     public override void OnStart()
     {
-        UIController.getInstance.PlayPanel.WeaponInfo[SlotIndex].SetWeaponType(UIWeaponInfo.WEAPONTYPE_MELEE);
+        if (Character.photonView.IsMine)
+            UIController.getInstance.PlayPanel.WeaponInfo[SlotIndex].SetWeaponType(UIWeaponInfo.WEAPONTYPE_MELEE);
     }
 
     public override void AttackDown(Vector3 dir)

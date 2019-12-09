@@ -14,7 +14,8 @@ public class Machinegun : Weapon
 
     public override void OnStart()
     {
-        UIController.getInstance.PlayPanel.WeaponInfo[SlotIndex].SetWeaponType(UIWeaponInfo.WEAPONTYPE_RANGE);
+        if (Character.photonView.IsMine)
+            UIController.getInstance.PlayPanel.WeaponInfo[SlotIndex].SetWeaponType(UIWeaponInfo.WEAPONTYPE_RANGE);
     }
 
     public override bool AttackCheck()
@@ -78,6 +79,7 @@ public class Machinegun : Weapon
     void CreateBullet(Vector3 dir)
     {
         var b = Instantiate(m_Bullet, transform.position + dir * 2.0f, transform.rotation);
+        b.transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
         var bullet = b.GetComponent<Bullet>();
         bullet.MoveVector = dir;
         bullet.m_Team = Character.m_TeamNumber;

@@ -65,11 +65,13 @@ public class CustomFreeLookCam : UnityStandardAssets.Cameras.PivotBasedCameraRig
         m_LockOnTarget = target;
         Vector3 dir = target.position - transform.position;
         m_LookAngle = Quaternion.LookRotation(dir, Vector3.up).eulerAngles.y - (m_IsFront ? 0.0f : 180.0f);
+        UIController.getInstance.PlayPanel.SetLockOn(true);
     }
 
     public void UnLock()
     {
         m_LockOnTarget = null;
+        UIController.getInstance.PlayPanel.SetLockOn(false);
     }
 
     protected override void Awake()
@@ -99,11 +101,14 @@ public class CustomFreeLookCam : UnityStandardAssets.Cameras.PivotBasedCameraRig
             m_AimSprite.transform.position = targetPos;
 
             if (!Camera.main.pixelRect.Contains(targetPos))
-                m_LockOnTarget = null;
+            {
+                UnLock();
+            }
         }
         else
         {
             m_AimSprite.transform.position = Camera.main.pixelRect.center;
+            UnLock();
         }
     }
 

@@ -94,8 +94,8 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
         SetCreatePosition(m_StartPosition[m_LocalID - 1]);
         var character = CreatePlayer(m_StartPosition[m_LocalID - 1]).GetComponent<CharacterBase>();
 
-        SetLeftWeaponType("Machinegun");
-        SetRightWeaponType("Sword");
+        SetLeftWeaponType("Sword");
+        SetRightWeaponType("Machinegun");
         character.GetComponent<CharacterBase>().RPC("ChangeWeapon", RpcTarget.AllBufferedViaServer, "Machinegun", 1);
         character.GetComponent<CharacterBase>().RPC("ChangeWeapon", RpcTarget.AllBufferedViaServer, "Sword", 0);
     }
@@ -110,75 +110,43 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
         m_SelectedRightWeaponName = x;
     }
 
-    public void ExitPitstop(Vector3 pos, Quaternion rot)
+    public void ExitPitstop(Transform t)
     {
-        var props = PhotonNetwork.CurrentRoom.CustomProperties;
+        if(Player != null)
+        {
+            var character = Player.GetComponent<CharacterBase>();
+            character.RPC("ChangeWeapon", RpcTarget.AllBufferedViaServer, m_SelectedLeftWeaponName, 0);
+            character.RPC("ChangeWeapon", RpcTarget.AllBufferedViaServer, m_SelectedRightWeaponName, 1);
+            m_Cam.gameObject.GetComponent<CameraController>().SetFreeLockCameraActive(true);
+            character.ExitPitstop(t.position, t.rotation);
+            UIController.getInstance.Pitout();
+        }
 
-        var character = Player.GetComponent<CharacterBase>();
-        character.RPC("ChangeWeapon", RpcTarget.AllBufferedViaServer, m_SelectedLeftWeaponName, 0);
-        character.RPC("ChangeWeapon", RpcTarget.AllBufferedViaServer, m_SelectedRightWeaponName, 1);
-        m_Cam.gameObject.GetComponent<CameraController>().SetFreeLockCameraActive(true);
-        character.ExitPitstop(pos, rot);
+        else
+        {
+            var character = CreatePlayer(t).GetComponent<CharacterBase>();
+            character.RPC("ChangeWeapon", RpcTarget.AllBufferedViaServer, m_SelectedLeftWeaponName, 0);
+            character.RPC("ChangeWeapon", RpcTarget.AllBufferedViaServer, m_SelectedRightWeaponName, 1);
+            m_Cam.gameObject.GetComponent<CameraController>().SetFreeLockCameraActive(true);
+            UIController.getInstance.Pitout();
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (m_IsSelectPitout)
-            SelectPitoutUpdate();
+        var props = PhotonNetwork.CurrentRoom.CustomProperties;
 
-        else
+        if (props.ContainsKey(RED_TEAM.ToString()))
         {
-            var props = PhotonNetwork.CurrentRoom.CustomProperties;
-
-            if (props.ContainsKey(RED_TEAM.ToString()))
-            {
-                int score = (int)props[RED_TEAM.ToString()];
-                UIController.getInstance.PlayPanel.SetRedTeamScore(score);
-            }
-
-            if (props.ContainsKey(BLUE_TEAM.ToString()))
-            {
-                int score = (int)props[BLUE_TEAM.ToString()];
-                UIController.getInstance.PlayPanel.SetBlueTeamScore(score);
-            }
-        }
-    }
-
-    void SelectPitoutUpdate()
-    {
-        Pitstop temp = null;
-
-        foreach (var item in m_Pitstop)
-        {
-            Vector2 scrmousePos = Input.mousePosition;
-            Vector2 scrPos = UIController.getInstance.GetMinimapPosition(item.PitoutPoint.position);
-            if (Vector2.Distance(scrPos, scrmousePos) < 100)
-            {
-                temp = item;
-                temp.MinimapIcon.SetActive(true);
-            }
-            else
-                item.MinimapIcon.SetActive(false);
+            int score = (int)props[RED_TEAM.ToString()];
+            UIController.getInstance.PlayPanel.SetRedTeamScore(score);
         }
 
-        if(Input.GetMouseButtonDown(0) && temp != null)
+        if (props.ContainsKey(BLUE_TEAM.ToString()))
         {
-            m_IsSelectPitout = false;
-            UIController.getInstance.Pitout();
-            temp.MinimapIcon.SetActive(false);
-
-            if (Player != null)
-            {
-                ExitPitstop(temp.PitoutPoint.position, temp.PitoutPoint.rotation);
-            }
-            else
-            {
-                var c = CreatePlayer(temp.PitoutPoint).GetComponent<CharacterBase>();
-                c.RPC("ChangeWeapon", RpcTarget.AllBufferedViaServer, m_SelectedLeftWeaponName, 0);
-                c.RPC("ChangeWeapon", RpcTarget.AllBufferedViaServer, m_SelectedRightWeaponName, 1);
-                m_Cam.gameObject.GetComponent<CameraController>().SetFreeLockCameraActive(true);
-            }
+            int score = (int)props[BLUE_TEAM.ToString()];
+            UIController.getInstance.PlayPanel.SetBlueTeamScore(score);
         }
     }
 

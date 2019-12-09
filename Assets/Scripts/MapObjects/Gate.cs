@@ -36,8 +36,6 @@ public class Gate : MonoBehaviourPunCallbacks
 
         if (other.gameObject.tag == "Player")
         {
-            ActiveNextGate();
-
             var character = other.gameObject.GetComponent<CharacterBase>();
             
             if (!character.photonView.IsMine)
@@ -45,6 +43,8 @@ public class Gate : MonoBehaviourPunCallbacks
 
             if (character.HasBall)
             {
+                ActiveNextGate();
+
                 object score;
                 if (!PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(character.m_TeamNumber.ToString(), out score))
                 {
@@ -61,8 +61,10 @@ public class Gate : MonoBehaviourPunCallbacks
         
         else if(other.gameObject.tag == "Ball")
         {
+            if (!other.GetComponent<PhotonView>().IsMine)
+                return;
+
             ActiveNextGate();
-            GameSceneManager.getInstance.SetCreatePosition(m_RevivePosition);
         }
     }
 

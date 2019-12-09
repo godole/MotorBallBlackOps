@@ -74,7 +74,7 @@ public class UserInput : MonoBehaviour
         }
 
 
-        if (Input.GetKey(KeyCode.F))
+        if (Input.GetKeyDown(KeyCode.F))
         {
             m_Client.TakeOffBall();
         }
