@@ -7,6 +7,7 @@ public class Sword : Weapon
 {
     public int m_AttackDamage;
     public float m_AttackDelay;
+    public float m_AttackingDelay;
     public float m_AttackWidth;
     public float m_AttackHeight;
     public float m_AttackPower;
@@ -26,12 +27,18 @@ public class Sword : Weapon
         if (!Character.photonView.IsMine)
             return;
 
+        StartCoroutine(AttackingDelay(dir));
+    }
+
+    IEnumerator AttackingDelay(Vector3 dir)
+    {
+        yield return new WaitForSeconds(m_AttackingDelay);
         Character.CurBatteryCapacity -= BatteryReduce;
 
         UIController.getInstance.PlayPanel.WeaponInfo[SlotIndex].MeleeNotReady();
 
         //var hit = Physics.OverlapSphere(transform.position, m_AttackRange, 1 << 11);
-        Vector3 center = transform.position + dir * m_AttackHeight / 2;
+        Vector3 center = Character.transform.position + dir * m_AttackHeight / 2;
         Vector3 size = new Vector3(m_AttackWidth, 1.0f, m_AttackHeight);
         Quaternion rot = Quaternion.LookRotation(dir, Vector3.up);
         var hit = Physics.OverlapBox(

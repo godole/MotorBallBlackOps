@@ -37,6 +37,11 @@ public class Shotgun : Weapon
         Character.CurBatteryCapacity -= BatteryReduce;
         IsAttackEnable = false;
 
+        GameObject.Find("DebugDraw").GetComponent<DebugDraw>().DrawBox(
+            Character.transform.position + dir * m_Range / 2
+            , new Vector3(3.0f, 2.0f, m_Range), 
+            Quaternion.LookRotation(dir, Vector3.up));
+
         var cols = Physics.OverlapSphere(Character.transform.position, m_Range, 1 << 11);
 
         foreach (var col in cols)

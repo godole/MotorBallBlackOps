@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿using Photon.Pun;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityStandardAssets.CrossPlatformInput;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class UserInput : MonoBehaviour
 {
@@ -92,7 +94,7 @@ public class UserInput : MonoBehaviour
         if (Input.GetKey(KeyCode.F2))
             m_Client.CurrentHP = 0;
 
-        if(Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q))
         {
             m_Client.LockOn();
         }

@@ -24,8 +24,13 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
     public static string BALL_OWNER_CHANGE = "BallOwnerChange";
     public static string CREATE_POSITION = "CreatePosition";
     public static string CREATE_ROTATION = "CreateRotation";
+    public const string PLAYER_READY = "IsPlayerReady";
+    public const string PLAYER_LOADED_LEVEL = "PlayerLoadedLevel";
+    public static string WINNER_TEAM = "WinnerTeam";
     public static int RED_TEAM = 1;
     public static int BLUE_TEAM = 2;
+
+    public int m_EndScore;
 
     public int m_LocalID;
 
@@ -94,10 +99,10 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
         SetCreatePosition(m_StartPosition[m_LocalID - 1]);
         var character = CreatePlayer(m_StartPosition[m_LocalID - 1]).GetComponent<CharacterBase>();
 
-        SetLeftWeaponType("Sword");
-        SetRightWeaponType("Machinegun");
-        character.GetComponent<CharacterBase>().RPC("ChangeWeapon", RpcTarget.AllBufferedViaServer, "Machinegun", 1);
-        character.GetComponent<CharacterBase>().RPC("ChangeWeapon", RpcTarget.AllBufferedViaServer, "Sword", 0);
+        SetLeftWeaponType("Machinegun");
+        SetRightWeaponType("Sword");
+        character.GetComponent<CharacterBase>().RPC("ChangeWeapon", RpcTarget.AllBufferedViaServer, "Machinegun", 0);
+        character.GetComponent<CharacterBase>().RPC("ChangeWeapon", RpcTarget.AllBufferedViaServer, "Sword", 1);
     }
 
     public void SetLeftWeaponType(string x)
@@ -141,12 +146,23 @@ public class GameSceneManager : MonoBehaviourPunCallbacks
         {
             int score = (int)props[RED_TEAM.ToString()];
             UIController.getInstance.PlayPanel.SetRedTeamScore(score);
+            EndCheck(score, 1);
         }
 
         if (props.ContainsKey(BLUE_TEAM.ToString()))
         {
             int score = (int)props[BLUE_TEAM.ToString()];
             UIController.getInstance.PlayPanel.SetBlueTeamScore(score);
+            EndCheck(score, 2);
+        }
+    }
+
+    void EndCheck(int score, int teamNumber)
+    {
+        if(score >= m_EndScore)
+        {
+            NetworkTool.SetCustomPropertiesSafe(WINNER_TEAM, teamNumber);
+            PhotonNetwork.LoadLevel("EndScene");
         }
     }
 

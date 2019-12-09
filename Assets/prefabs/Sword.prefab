@@ -199,11 +199,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BatteryReduce: 5
-  m_AttackDamage: 30
-  m_AttackDelay: 1
-  m_AttackWidth: 3
-  m_AttackHeight: 5
-  m_AttackPower: 30
+  m_AttackDamage: 20
+  m_AttackDelay: 1.2
+  m_AttackingDelay: 0
+  m_AttackWidth: 7
+  m_AttackHeight: 6
+  m_AttackPower: 25
 --- !u!1 &6338237553982648008
 GameObject:
   m_ObjectHideFlags: 0

@@ -198,13 +198,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef2e8ca828c3abb44a90e013d637088c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_BatteryReduce: 4
-  m_MaxBulletCapacity: 12
-  m_CurBulletCapacity: 12
-  m_Range: 7
-  m_ShotDelay: 1
+  m_BatteryReduce: 6
+  m_MaxBulletCapacity: 18
+  m_CurBulletCapacity: 18
+  m_Range: 12
+  m_ShotDelay: 1.5
   m_ShotAngle: 30
-  m_Damage: 20
+  m_Damage: 15
 --- !u!1 &7705834428645881086
 GameObject:
   m_ObjectHideFlags: 0

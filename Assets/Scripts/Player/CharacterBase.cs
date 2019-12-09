@@ -96,6 +96,21 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
         CurrentHP = m_MaxHP;
         CurBatteryCapacity = m_MaxBatteryCapacity;
 
+        object team;
+        photonView.Owner.CustomProperties.TryGetValue("Team_Number_Select", out team);
+        m_TeamNumber = (int)team;
+        
+        Material tempMaterial = m_TeamNumber == 1 ? m_CharacterRedMaterial : m_CharacterBlueMaterial;
+        foreach (var mesh in m_ColorMesh)
+        {
+            mesh.material = tempMaterial;
+        }
+
+        if (photonView.IsMine)
+            tempMaterial = m_PlayerIconMaterial;
+
+        m_IconMesh.material = tempMaterial;
+
         if (photonView.IsMine)
         {
             m_PlayerID = GameSceneManager.getInstance.m_LocalID;
@@ -145,31 +160,7 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
         m_Ball.SetActive(m_HasBall);
         CurBatteryCapacity -= m_BatteryReduce * Time.deltaTime;
 
-
-        if (m_DashCount < m_DashMaxCount)
-        {
-            m_DashCount += Time.deltaTime;
-            if (m_DashCount >= m_DashMaxCount)
-                m_DashCount = m_DashMaxCount;
-        }
-
-        if (transform.position.y < -50.0f)
-            m_CurrentHP = 0;
-
-        if (m_CurrentHP <= 0 || CurBatteryCapacity <= 0)
-        {
-            if (HasBall && photonView.IsMine)
-                PhotonNetwork.Instantiate("Ball", transform.position, new Quaternion(), 0);
-
-            
-
-            PhotonNetwork.Destroy(gameObject);
-            
-        }
-
-
-        Material tempMaterial = m_PlayerID % 2 == 1 ? m_CharacterRedMaterial : m_CharacterBlueMaterial;
-        m_TeamNumber = m_PlayerID % 2 == 1 ? GameSceneManager.RED_TEAM : GameSceneManager.BLUE_TEAM;
+        Material tempMaterial = m_TeamNumber == 1 ? m_CharacterRedMaterial : m_CharacterBlueMaterial;
         foreach (var mesh in m_ColorMesh)
         {
             mesh.material = tempMaterial;
@@ -185,7 +176,25 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
 
         m_IconMesh.material = tempMaterial;
 
+        if (m_DashCount < m_DashMaxCount)
+        {
+            m_DashCount += Time.deltaTime;
+            if (m_DashCount >= m_DashMaxCount)
+                m_DashCount = m_DashMaxCount;
+        }
 
+        if (transform.position.y < -50.0f)
+            m_CurrentHP = 0;
+
+        if (m_CurrentHP <= 0 || CurBatteryCapacity <= 0)
+        {
+            if (HasBall && photonView.IsMine)
+                PhotonNetwork.Instantiate("Ball", transform.position, new Quaternion(), 0);
+            
+            PhotonNetwork.Destroy(gameObject);
+            
+        }
+        
         if (m_IsThrowing)
         {
             m_throwChargningPower += m_ThrowPower * Time.deltaTime;
@@ -318,6 +327,16 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
         m_Weapons[index].OnStart();
     }
 
+    [PunRPC]
+    void TakenBall()
+    {
+        if (!photonView.IsMine)
+            return;
+
+        m_IsThrowing = false;
+        UIController.getInstance.PlayPanel.ThrowGageSlider.gameObject.SetActive(false);
+    }
+
     public void TakeOffBall()
     {
         if (!m_HasBall)
@@ -340,6 +359,7 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
                 if (!character.m_HasBall)
                     continue;
 
+                character.RPC("TakenBall", RpcTarget.AllBufferedViaServer);
                 NetworkTool.SetCustomPropertiesSafe(GameSceneManager.BALL_OWNER_CHANGE, m_PlayerID);
             }
         }
@@ -407,7 +427,7 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     void ThrowBall(Vector3 dir, float power)
     {
-        if (!HasBall || !photonView.IsMine)
+        if (!HasBall || !photonView.IsMine || !IsThrowing)
             return;
 
         UIController.getInstance.PlayPanel.ThrowGageSlider.gameObject.SetActive(false);
@@ -433,18 +453,11 @@ public class CharacterBase : MonoBehaviourPunCallbacks, IPunObservable
         bool isForward = false;
         Vector3 tempDir = Vector3.zero;
         Transform tempTransform = null;
-        if (m_Cam.IsLockOn)
-        {
-            tempTransform = m_Cam.gameObject.transform;
-            Vector3 d = m_Cam.LockOnTarget.position - transform.position;
-            Vector3 rotEuler = transform.rotation.eulerAngles;
-            rotEuler.y = Quaternion.LookRotation(d, Vector3.up).eulerAngles.y;
-            transform.eulerAngles = rotEuler;
-        }
-        else
-        {
-            tempTransform = gameObject.transform;
-        }
+
+        tempTransform = m_Cam.gameObject.transform;
+        Vector3 rotEuler = transform.rotation.eulerAngles;
+        rotEuler.y = Quaternion.LookRotation(m_Cam.ShotDirection, Vector3.up).eulerAngles.y;
+        transform.eulerAngles = rotEuler;
 
         if (dir.x > 0.0f)
             tempDir += tempTransform.right;

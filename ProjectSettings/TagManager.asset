@@ -10,6 +10,7 @@ TagManager:
   - Gate
   - Bullet
   - Enemy
+  - Wall
   layers:
   - Default
   - TransparentFX
@@ -32,7 +33,7 @@ TagManager:
   - Pitstop
   - MinimapIcon
   - Track
-  - 
+  - Wall
   - 
   - 
   - 

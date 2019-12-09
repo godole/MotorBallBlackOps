@@ -32,12 +32,21 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        var character = other.GetComponent<CharacterBase>();
-
-        if (m_Team != character.m_TeamNumber)
+        if(other.CompareTag("Player"))
         {
-            Instantiate(m_ExplosionEff, transform.position, Quaternion.identity);
-            character.RPC("Hit", Photon.Pun.RpcTarget.AllViaServer, Vector3.zero, m_AttackDamage);
+            var character = other.GetComponent<CharacterBase>();
+
+            if (m_Team != character.m_TeamNumber)
+            {
+                Instantiate(m_ExplosionEff, transform.position, Quaternion.identity);
+                character.RPC("Hit", Photon.Pun.RpcTarget.AllViaServer, Vector3.zero, m_AttackDamage);
+                StopAllCoroutines();
+                Destroy(gameObject);
+            }
+        }
+        
+        else if(other.CompareTag("Wall"))
+        {
             StopAllCoroutines();
             Destroy(gameObject);
         }

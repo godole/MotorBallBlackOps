@@ -126,7 +126,7 @@ MonoBehaviour:
     type: 3}
   m_MaxBulletCapacity: 80
   m_CurBulletCapacity: 80
-  m_ShotDelay: 0.3
+  m_ShotDelay: 0.2
 --- !u!1 &5143671107332275900
 GameObject:
   m_ObjectHideFlags: 0

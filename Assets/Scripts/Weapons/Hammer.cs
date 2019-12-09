@@ -7,6 +7,7 @@ public class Hammer : Weapon
 {
     public int m_AttackMaxDamage;
     public float m_AttackDelay;
+    public float m_AttackingDelay;
     public float m_AttackWidth;
     public float m_AttackHeight;
     public float m_AttackMaxPower;
@@ -48,8 +49,37 @@ public class Hammer : Weapon
 
         Character.PlayAnimation("Melee Attack", "Melee Attack");
 
+        Character.transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
+
+        var rb = Character.GetComponent<Rigidbody>();
+        rb.velocity = Vector3.zero;
+        rb.AddForce(dir * m_AttackMaxPower, ForceMode.Impulse);
+
+        StartCoroutine(AttackingDelay(dir));
+        StartCoroutine(AttackDelay());
+    }
+
+    public override void Attacking(Vector3 dir)
+    {
         if (!Character.photonView.IsMine)
             return;
+
+        m_AttackDamage += m_AttackMaxDamage * Time.deltaTime;
+        if (m_AttackDamage > m_AttackMaxDamage)
+            m_AttackDamage = m_AttackMaxDamage;
+
+        m_AttackPower += m_AttackMaxPower * Time.deltaTime;
+        if (m_AttackPower > m_AttackMaxPower)
+            m_AttackPower = m_AttackMaxPower;
+
+        UIController.getInstance.PlayPanel.WeaponInfo[SlotIndex].ChargeSlider.value = m_AttackDamage / m_AttackMaxDamage;
+    }
+
+    IEnumerator AttackingDelay(Vector3 dir)
+    {
+        yield return new WaitForSeconds(m_AttackingDelay);
+        if (!Character.photonView.IsMine)
+            yield return null;
 
         Character.CurBatteryCapacity -= BatteryReduce;
 
@@ -58,11 +88,7 @@ public class Hammer : Weapon
         UIController.getInstance.PlayPanel.WeaponInfo[SlotIndex].MeleeNotReady();
         UIController.getInstance.PlayPanel.WeaponInfo[SlotIndex].ChargeSlider.gameObject.SetActive(false);
 
-        var rb = Character.GetComponent<Rigidbody>();
-        rb.velocity = Vector3.zero;
-        rb.AddForce(dir * m_AttackMaxPower, ForceMode.Impulse);
-
-        Vector3 center = transform.position + dir * m_AttackHeight / 2;
+        Vector3 center = Character.transform.position + dir * m_AttackHeight / 4;
         Vector3 size = new Vector3(m_AttackWidth, 1.0f, m_AttackHeight);
         Quaternion rot = Quaternion.LookRotation(dir, Vector3.up);
         var hit = Physics.OverlapBox(
@@ -85,28 +111,10 @@ public class Hammer : Weapon
             }
         }
 
-        Character.transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
-
         m_AttackDamage = 0.0f;
         m_AttackPower = 0.0f;
 
-        StartCoroutine(AttackDelay());
-    }
-
-    public override void Attacking(Vector3 dir)
-    {
-        if (!Character.photonView.IsMine)
-            return;
-
-        m_AttackDamage += m_AttackMaxDamage * Time.deltaTime;
-        if (m_AttackDamage > m_AttackMaxDamage)
-            m_AttackDamage = m_AttackMaxDamage;
-
-        m_AttackPower += m_AttackMaxPower * Time.deltaTime;
-        if (m_AttackPower > m_AttackMaxPower)
-            m_AttackPower = m_AttackMaxPower;
-
-        UIController.getInstance.PlayPanel.WeaponInfo[SlotIndex].ChargeSlider.value = m_AttackDamage / m_AttackMaxDamage;
+        
     }
 
     IEnumerator AttackDelay()
